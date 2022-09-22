@@ -8,40 +8,6 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/bet01"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:onClick="add_bet1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:srcCompat="@drawable/bet1"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageView
-        android:id="@+id/bet05"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:onClick="add_bet5"
-        app:layout_constraintStart_toEndOf="@+id/bet01"
-        app:layout_constraintTop_toTopOf="@+id/bet01"
-        app:srcCompat="@drawable/bet5"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageView
-        android:id="@+id/bet10"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:onClick="add_bet10"
-        app:layout_constraintStart_toEndOf="@+id/bet05"
-        app:layout_constraintTop_toTopOf="@+id/bet05"
-        app:srcCompat="@drawable/bet10"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,6 +29,68 @@
         app:srcCompat="@drawable/bar"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <ImageView
+        android:id="@+id/minus_bet10"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:onClick="minus_bet10"
+        app:layout_constraintStart_toEndOf="@+id/minus_bet05"
+        app:layout_constraintTop_toTopOf="@+id/minus_bet05"
+        app:srcCompat="@drawable/bet10_minus" />
+
+    <ImageView
+        android:id="@+id/add_bet05"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:onClick="add_bet5"
+        app:layout_constraintStart_toEndOf="@+id/add_bet01"
+        app:layout_constraintTop_toTopOf="@+id/add_bet01"
+        app:srcCompat="@drawable/bet5_add" />
+
+    <ImageView
+        android:id="@+id/minus_bet01"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:onClick="minus_bet1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_bet01"
+        app:srcCompat="@drawable/bet1_minus" />
+
+    <ImageView
+        android:id="@+id/minus_bet05"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:onClick="minus_bet5"
+        app:layout_constraintStart_toEndOf="@+id/minus_bet01"
+        app:layout_constraintTop_toTopOf="@+id/minus_bet01"
+        app:srcCompat="@drawable/bet5_minus" />
+
+    <ImageView
+        android:id="@+id/add_bet10"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:onClick="add_bet10"
+        app:layout_constraintStart_toEndOf="@+id/add_bet05"
+        app:layout_constraintTop_toTopOf="@+id/add_bet05"
+        app:srcCompat="@drawable/bet10_add" />
+
+    <ImageView
+        android:id="@+id/add_bet01"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:onClick="add_bet1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/bet1_add" />
+
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
@@ -82,7 +110,7 @@
         android:onClick="record_bet"
         android:text="Use record bet"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bet01" />
+        app:layout_constraintTop_toBottomOf="@+id/minus_bet01" />
 
     <TextView
         android:id="@+id/textView4"
@@ -103,7 +131,7 @@
         android:stateListAnimator="@null"
         android:text="Option"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/bet10" />
+        app:layout_constraintTop_toTopOf="@+id/add_bet10" />
 
     <Button
         android:id="@+id/button2"
