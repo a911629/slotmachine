@@ -1,13 +1,24 @@
 package com.example.slotgame;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager option_board;
     private FragmentManager leader_board;
     private FragmentManager list_board;
+    private RecyclerView recyclerView;
+    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
 
     @Override
@@ -32,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         leader_board = getSupportFragmentManager();
         list_board = getSupportFragmentManager();
 
-
     }
 
     public void bar(View view) {
@@ -46,6 +58,69 @@ public class MainActivity extends AppCompatActivity {
     public void find_view() {
         score_t = findViewById(R.id.score);
         bet_t = findViewById(R.id.bet);
+
+        //recycler view
+        recyclerView = findViewById(R.id.leaderboard);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Query query = FirebaseDatabase.getInstance().getReference("leaderboard");
+        FirebaseRecyclerOptions<leaderboard> leaderboard = new FirebaseRecyclerOptions.Builder<leaderboard>()
+                .setQuery(query, leaderboard.class).build();
+        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(leaderboard) {
+            @Override
+            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                holder.rank.setText(position);
+            }
+
+            @Override
+            public int getItemCount() {
+                return 5;
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull com.example.slotgame.leaderboard model) {
+                holder.name.setText("abc");
+                holder.score.setText("111");
+                holder.date.setText("20220101");
+            }
+
+            @NonNull
+            @Override
+            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+                return new leaderboardHolder(view);
+            }
+        };
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    class leaderboardHolder extends RecyclerView.ViewHolder {
+        TextView rank;
+        TextView name;
+        TextView score;
+        TextView date;
+
+        public leaderboardHolder(@NonNull View itemView) {
+            super(itemView);
+            rank = itemView.findViewById(R.id.leader_rank);
+            name = itemView.findViewById(R.id.leader_name);
+            score = itemView.findViewById(R.id.leader_score);
+            date = itemView.findViewById(R.id.leader_date);
+        }
     }
 
     public void refresh_score() {
