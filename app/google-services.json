@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "191605871746",
+    "firebase_url": "https://leaderboard-ae3d5-default-rtdb.firebaseio.com",
+    "project_id": "leaderboard-ae3d5",
+    "storage_bucket": "leaderboard-ae3d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191605871746:android:8ccea78658c275e8eed09b",
+        "android_client_info": {
+          "package_name": "com.calvin.slotgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191605871746-fr3dbbika9dcshfi0vd1rcktfn283fo6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcIKF7uY68c0YSLnx7zYO9C4ZL0avHpPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191605871746-fr3dbbika9dcshfi0vd1rcktfn283fo6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191605871746:android:5b05f0256c1d60aeeed09b",
+        "android_client_info": {
+          "package_name": "com.example.slotgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191605871746-fr3dbbika9dcshfi0vd1rcktfn283fo6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcIKF7uY68c0YSLnx7zYO9C4ZL0avHpPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191605871746-fr3dbbika9dcshfi0vd1rcktfn283fo6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
