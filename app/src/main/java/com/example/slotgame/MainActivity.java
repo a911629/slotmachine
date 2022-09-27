@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,6 +20,8 @@ import com.google.firebase.database.Query;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +32,20 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager option_board;
     private FragmentManager leader_board;
     private FragmentManager list_board;
-//    private RecyclerView recyclerView;
+    private boolean isStarted = false;
+    private Wheel wheel1, wheel2, wheel3;
+    private ImageView slot1, slot2, slot3;
+
+
+    //    private RecyclerView recyclerView;
 //    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
+    public static final Random RANDOM = new Random();
+
+    public static long randomLong(long lower, long upper) {
+//        return (long) (RANDOM.nextDouble() * (upper - lower));
+        return lower + (long) (RANDOM.nextDouble() * (upper - lower));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +63,76 @@ public class MainActivity extends AppCompatActivity {
 
     public void bar(View view) {
         Log.d(TAG, "bar: ");
-        score.setRecord(7);
+//        score.setRecord(7);
+        if (score.getBet() != 0)
+            if (isStarted) {
+                Log.d(TAG, "bar: go stop");
+                wheel1.stopWheel();
+                wheel2.stopWheel();
+                wheel3.stopWheel();
 
+                if (wheel1.currentIndex == wheel2.currentIndex && wheel2.currentIndex == wheel3.currentIndex
+                        && wheel1.currentIndex == wheel3.currentIndex) {
+                    score.bingo(wheel1.currentIndex);
+                } else {
+                    Log.d(TAG, "bar: not bingo");
+                }
+                score.clean_bet();
+                isStarted = false;
+            } else {
+                Log.d(TAG, "bar: go start");
+                wheel1 = new Wheel(new Wheel.WheelListener() {
+                    @Override
+                    public void newImage(final int img) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                slot1.setImageResource(img);
+                            }
+                        });
+                    }
+//            }, 200, randomLong(0, 200));
+//            }, 200, randomLong_t(1, 1));
+                }, 200, 200);
+
+                wheel1.start();
+
+                wheel2 = new Wheel(new Wheel.WheelListener() {
+                    @Override
+                    public void newImage(final int img) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                slot2.setImageResource(img);
+                            }
+                        });
+                    }
+                }, 200, randomLong(150, 400));
+
+//            }, 200, 0);
+
+                wheel2.start();
+
+                wheel3 = new Wheel(new Wheel.WheelListener() {
+                    @Override
+                    public void newImage(final int img) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                slot3.setImageResource(img);
+                            }
+                        });
+                    }
+                }, 200, randomLong(150, 400));
+
+//            }, 200, 0);
+
+                wheel3.start();
+
+//            test.set_record();
+                isStarted = true;
+            }
+        refresh_score();
         // TODO:
         // score.setRecord(score.getBet());
     }
@@ -58,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
     public void find_view() {
         score_t = findViewById(R.id.score);
         bet_t = findViewById(R.id.bet);
+
+        slot1 = (ImageView) findViewById(R.id.slot1);
+        slot2 = (ImageView) findViewById(R.id.slot2);
+        slot3 = (ImageView) findViewById(R.id.slot3);
 
         //recycler view
 //        recyclerView = findViewById(R.id.leaderboard);

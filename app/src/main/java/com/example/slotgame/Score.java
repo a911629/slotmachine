@@ -1,9 +1,51 @@
 package com.example.slotgame;
 
+import android.util.Log;
+
 public class Score {
+    private static final String TAG = Score.class.getSimpleName();
     private int current;
     private int bet;
     private int record;
+
+    public void bingo(int cur) {
+//        load_score();
+        switch (cur) {
+            case 0:
+            case 1:
+            case 6:
+                setCurrent(current + bet * 3);
+//                current += bet * 3;
+                break;
+            case 2:
+            case 3:
+                setCurrent(current + bet * 5);
+//                current += bet * 5;
+                break;
+            case 4:
+                setCurrent(current + bet * 9);
+//                current += bet * 9;
+                break;
+            case 5:
+                setCurrent(current + bet * 17);
+//                current += bet * 17;
+                break;
+            default:
+//                bet = 0;
+                setBet(0);
+                break;
+        }
+        setRecord(getBet());
+//        record = bet;
+//        set_score();
+    }
+
+    public void clean_bet() {
+        Log.d(TAG, "clean_bet: ");
+//        load_score();
+        setBet(0);
+//        set_score();
+    }
 
     public Score() {
         current = 100;
@@ -14,6 +56,7 @@ public class Score {
     public void init_score() {
         setCurrent(100);
         setBet(0);
+        setRecord(0);
     }
 
     public void compute(int in) {

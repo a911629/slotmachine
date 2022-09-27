@@ -37,22 +37,22 @@ public class LeaderBoardFragment extends Fragment {
         recycler = view.findViewById(R.id.leaderboard);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
-
-        init();
+// TODO: leaderboard read database
+//        init();
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
+//        adapter.startListening();
         Log.d(TAG, "onStart: ");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+//        adapter.stopListening();
         Log.d(TAG, "onStop: ");
     }
 
