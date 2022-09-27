@@ -33,11 +33,11 @@ public class LeaderBoardFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.leader_board, container, false);
-        recycler = view.findViewById(R.id.leaderboard);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
 // TODO: leaderboard read database
+//        view = inflater.inflate(R.layout.leader_board, container, false);
+//        recycler = view.findViewById(R.id.leaderboard);
+//        recycler.setHasFixedSize(true);
+//        recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
 //        init();
         return view;
     }
