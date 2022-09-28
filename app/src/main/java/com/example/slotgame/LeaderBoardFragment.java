@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,15 +30,20 @@ public class LeaderBoardFragment extends Fragment {
     String name;
     int score;
     Date date;
+    private Query query;
+    private FirebaseRecyclerOptions<leaderboard> data;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 // TODO: leaderboard read database
-//        view = inflater.inflate(R.layout.leader_board, container, false);
-//        recycler = view.findViewById(R.id.leaderboard);
-//        recycler.setHasFixedSize(true);
-//        recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
+        view = inflater.inflate(R.layout.leader_board, container, false);
+        recycler = view.findViewById(R.id.leaderboard);
+        recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
+
+//        Query query = FirebaseDatabase.getInstance().getReference("users");
+
 //        init();
         return view;
     }
@@ -57,16 +63,20 @@ public class LeaderBoardFragment extends Fragment {
     }
 
     private void init() {
-        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").child("leaderboard");
-        FirebaseRecyclerOptions<leaderboard> data = new FirebaseRecyclerOptions.Builder<leaderboard>()
+        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByKey();
+        data = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
-         adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
+        System.out.print("start");
+        System.out.print(data);
+        System.out.print("end");
+//        Log.d(TAG, "init: data",  data);
+        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
             @Override
             public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
                 super.onBindViewHolder(holder, position);
-                holder.rank.setText(Integer.toString(position));
+//                holder.rank.setText(position + "");
                 holder.date.setText(lead.getDate());
-                holder.score.setText(Integer.toString(lead.getScore()));
+                holder.score.setText(lead.getScore() + "");
                 holder.name.setText(lead.getName());
             }
 
@@ -81,9 +91,63 @@ public class LeaderBoardFragment extends Fragment {
                 View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
                 return new leaderboardHolder(view);
             }
-        };
+         };
+
         recycler.setAdapter(adapter);
     }
+
+    class leaderboardHolder extends RecyclerView.ViewHolder {
+//        TextView rank;
+        TextView name;
+        TextView score;
+        TextView date;
+
+        public leaderboardHolder(@NonNull View itemView) {
+            super(itemView);
+//            rank = itemView.findViewById(R.id.leader_rank);
+            name = itemView.findViewById(R.id.leader_name);
+            score = itemView.findViewById(R.id.leader_score);
+            date = itemView.findViewById(R.id.leader_date);
+        }
+    }
+
+//    class LeaderAdapter extends RecyclerView.Adapter<LeaderAdapter.LeaderHolder> {
+//
+//
+//        @NonNull
+//        @Override
+//        public LeaderHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//            View view =getLayoutInflater().inflate(R.layout.leader_board, parent, false);
+//            return new LeaderHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(@NonNull LeaderHolder holder, int position) {
+//            holder.rank.setText(position+1);
+//            holder.name.setText();
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return 0;
+//        }
+//
+//        class LeaderHolder extends RecyclerView.ViewHolder {
+//            TextView rank;
+//            TextView name;
+//            TextView score;
+//            TextView date;
+//
+//            public LeaderHolder(@NonNull View itemView) {
+//                super(itemView);
+//                this.rank = itemView.findViewById(R.id.leader_rank);
+//                this.name = itemView.findViewById(R.id.leader_name);
+//                this.score = itemView.findViewById(R.id.leader_score);
+//                this.date = itemView.findViewById(R.id.leader_date);
+//            }
+//        }
+//    }
+//}
 
     public static LeaderBoardFragment getInstance() {
         if (instance == null)

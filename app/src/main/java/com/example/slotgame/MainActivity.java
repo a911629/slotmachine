@@ -146,13 +146,6 @@ public class MainActivity extends AppCompatActivity {
         slot3 = (ImageView) findViewById(R.id.slot3);
 
         //recycler view
-//        recyclerView = findViewById(R.id.leaderboard);
-//
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard");
-//        FirebaseRecyclerOptions<leaderboard> data = new FirebaseRecyclerOptions.Builder<leaderboard>()
-//                .setQuery(query, leaderboard.class).build();
 //        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
 //            @Override
 //            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {

@@ -14,6 +14,8 @@ public class leaderboard {
         this.date = date;
     }
 
+
+
     public String getName() {
         return name;
     }
