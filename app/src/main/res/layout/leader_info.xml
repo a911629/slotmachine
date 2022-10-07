@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:drawable/spinner_background">
+    android:background="@color/teal_200">
 
     <TextView
-        android:id="@+id/leader_rank"
+        android:id="@+id/leader_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,16 +17,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/leader_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/leader_rank"
-        app:layout_constraintStart_toEndOf="@+id/leader_rank"
-        app:layout_constraintTop_toTopOf="@+id/leader_rank" />
 
     <TextView
         android:id="@+id/leader_date"

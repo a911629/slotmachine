@@ -15,15 +15,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Score score = new Score();
@@ -36,11 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private Wheel wheel1, wheel2, wheel3;
     private ImageView slot1, slot2, slot3;
 
+    //recyclerview test
+    private Query query;
+    private DatabaseReference leaderRef;
+    private FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder> adapter;
+    public RecyclerView recycler;
 
     //    private RecyclerView recyclerView;
 //    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
     public static final Random RANDOM = new Random();
+    private FirebaseAuth auth;
 
     public static long randomLong(long lower, long upper) {
 //        return (long) (RANDOM.nextDouble() * (upper - lower));
@@ -58,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         option_board = getSupportFragmentManager();
         leader_board = getSupportFragmentManager();
         list_board = getSupportFragmentManager();
-
+        auth = FirebaseAuth.getInstance();
     }
 
     public void bar(View view) {
@@ -145,7 +155,53 @@ public class MainActivity extends AppCompatActivity {
         slot2 = (ImageView) findViewById(R.id.slot2);
         slot3 = (ImageView) findViewById(R.id.slot3);
 
-        //recycler view
+        //recycler view test
+        Log.d(TAG, "find_view: create recycler");
+        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
+        recycler = findViewById(R.id.test);
+        recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
+        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //這可以印出資料庫完整資料
+//                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
+//                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+//                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
+//                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
+//                }
+//                leader = snapshot.getValue(leaderboard.class);
+//                Log.d(TAG, "onDataChange: calvin3 " + leader.getName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }));
+        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
+                .setQuery(query, leaderboard.class).build();
+        adapter = new FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder>(options) {
+
+            @NonNull
+            @Override
+            public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+                return new testHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull testHolder holder, int position, @NonNull leaderboard model) {
+                holder.date.setText(model.getDate());
+                holder.name.setText(model.getName());
+                holder.score.setText(model.getScore());
+            }
+        };
+        recycler.setAdapter(adapter);
+
+
+
 //        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
 //            @Override
 //            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
@@ -171,39 +227,38 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        adapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        adapter.stopListening();
-    }
-
-    static class leaderboardHolder extends RecyclerView.ViewHolder {
-        TextView rank;
+    class testHolder extends RecyclerView.ViewHolder {
+        //        TextView rank;
         TextView name;
         TextView score;
         TextView date;
 
-        public leaderboardHolder(@NonNull View itemView) {
+        public testHolder(@NonNull View itemView) {
             super(itemView);
 //            rank = itemView.findViewById(R.id.leader_rank);
             name = itemView.findViewById(R.id.leader_name);
             score = itemView.findViewById(R.id.leader_score);
             date = itemView.findViewById(R.id.leader_date);
         }
+    }
 
-        public TextView getRank() {
-            return rank;
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(this);
+//        adapter.startListening();
+    }
 
-        public void setRank(TextView rank) {
-            this.rank = rank;
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        auth.removeAuthStateListener(this);
+//        adapter.stopListening();
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        Log.d(TAG, "onAuthStateChanged: auth login");
     }
 
     public void refresh_score() {

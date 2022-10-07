@@ -1,5 +1,6 @@
 package com.example.slotgame;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,42 +16,71 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-public class LeaderBoardFragment extends Fragment {
+public class LeaderBoardFragment extends Fragment implements ValueEventListener {
     private static final String TAG = LeaderBoardFragment.class.getSimpleName();
     private View view;
     private static LeaderBoardFragment instance;
     public RecyclerView recycler;
-    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
+    //    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
+    private
 
     String name;
     int score;
     Date date;
+
+    public List<leaderboard> leaderboards;
     private Query query;
-    private FirebaseRecyclerOptions<leaderboard> data;
+    private DatabaseReference leaderRef;
+//    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
+    private leaderboard leader;
+    private ValueEventListener DataListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            Log.d(TAG, "onDataChange: calvin3 " + snapshot.getValue());
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+    //    private FirebaseAuth auth;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 // TODO: leaderboard read database
         view = inflater.inflate(R.layout.leader_board, container, false);
-        recycler = view.findViewById(R.id.leaderboard);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(LeaderBoardFragment.this.getContext()));
+//
+//        leaderRef = FirebaseDatabase.getInstance().getReference().child("leaderboard");
+//        Log.d(TAG, "onCreateView: " + leaderRef.getDatabase());
+//        FirebaseDatabase database = leaderRef.getDatabase();
+//        database.
 
-//        Query query = FirebaseDatabase.getInstance().getReference("users");
-
-//        init();
+        init(view);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        leaderboards = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("leaderboard")
+                .child("status")
+                .addValueEventListener(DataListener);
 //        adapter.startListening();
         Log.d(TAG, "onStart: ");
     }
@@ -62,92 +92,97 @@ public class LeaderBoardFragment extends Fragment {
         Log.d(TAG, "onStop: ");
     }
 
-    private void init() {
-        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByKey();
-        data = new FirebaseRecyclerOptions.Builder<leaderboard>()
-                .setQuery(query, leaderboard.class).build();
-        System.out.print("start");
-        System.out.print(data);
-        System.out.print("end");
-//        Log.d(TAG, "init: data",  data);
-        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
-            @Override
-            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
-                super.onBindViewHolder(holder, position);
-//                holder.rank.setText(position + "");
-                holder.date.setText(lead.getDate());
-                holder.score.setText(lead.getScore() + "");
-                holder.name.setText(lead.getName());
-            }
-
-            @Override
-            public int getItemCount() {
-                return 5;
-            }
-
-            @NonNull
-            @Override
-            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
-                return new leaderboardHolder(view);
-            }
-         };
-
-        recycler.setAdapter(adapter);
+    @Override
+    public void onCancelled(@NonNull DatabaseError error) {
+        Log.d(TAG, "onCancelled: ");
     }
 
-    class leaderboardHolder extends RecyclerView.ViewHolder {
-//        TextView rank;
-        TextView name;
-        TextView score;
-        TextView date;
-
-        public leaderboardHolder(@NonNull View itemView) {
-            super(itemView);
-//            rank = itemView.findViewById(R.id.leader_rank);
-            name = itemView.findViewById(R.id.leader_name);
-            score = itemView.findViewById(R.id.leader_score);
-            date = itemView.findViewById(R.id.leader_date);
-        }
-    }
-
-//    class LeaderAdapter extends RecyclerView.Adapter<LeaderAdapter.LeaderHolder> {
-//
-//
-//        @NonNull
-//        @Override
-//        public LeaderHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//            View view =getLayoutInflater().inflate(R.layout.leader_board, parent, false);
-//            return new LeaderHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull LeaderHolder holder, int position) {
-//            holder.rank.setText(position+1);
-//            holder.name.setText();
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return 0;
-//        }
-//
-//        class LeaderHolder extends RecyclerView.ViewHolder {
-//            TextView rank;
-//            TextView name;
-//            TextView score;
-//            TextView date;
-//
-//            public LeaderHolder(@NonNull View itemView) {
-//                super(itemView);
-//                this.rank = itemView.findViewById(R.id.leader_rank);
-//                this.name = itemView.findViewById(R.id.leader_name);
-//                this.score = itemView.findViewById(R.id.leader_score);
-//                this.date = itemView.findViewById(R.id.leader_date);
+    private void init(View view) {
+//        Log.d(TAG, "init: ");
+//        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
+//        recycler = view.findViewById(R.id.leaderboard);
+//        recycler.setHasFixedSize(true);
+//        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        query = FirebaseDatabase.getInstance().getReference("leaderboard");
+//        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                //這可以印出資料庫完整資料
+//                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
+//                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+//                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
+//                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
+//                }
+////                leader = snapshot.getValue(leaderboard.class);
+////                Log.d(TAG, "onDataChange: calvin3 " + leader.getName());
 //            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        }));
+//        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
+//                .setQuery(query, leaderboard.class).build();
+//        Log.d(TAG, "init2: " + options.getSnapshots());
+//        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(options) {
+//            @Override
+//            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
+//                super.onBindViewHolder(holder, position);
+//                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
+//
+////                holder.rank.setText((position + 1) + "");
+//                holder.date.setText(lead.getDate());
+//                holder.score.setText(lead.getScore() + "");
+//                holder.name.setText(lead.getName());
+//                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
+//            }
+//
+//            @NonNull
+//            @Override
+//            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+//                return new leaderboardHolder(view);
+//            }
+//        };
+//        recycler.setAdapter(adapter);
+//        Log.d(TAG, "init end");
+    }
+
+//    class leaderboardHolder extends RecyclerView.ViewHolder {
+//        //        TextView rank;
+//        TextView name;
+//        TextView score;
+//        TextView date;
+//
+//        public leaderboardHolder(@NonNull View itemView) {
+//            super(itemView);
+////            rank = itemView.findViewById(R.id.leader_rank);
+//            name = itemView.findViewById(R.id.leader_name);
+//            score = itemView.findViewById(R.id.leader_score);
+//            date = itemView.findViewById(R.id.leader_date);
 //        }
 //    }
-//}
+
+    @Override
+    public void onDataChange(@NonNull DataSnapshot snapshot) {
+        leaderboard lead = snapshot.getValue(leaderboard.class);
+        Log.d(TAG, "onDataChange: " + lead.getName() + "database" + snapshot.toString());
+        FirebaseDatabase.getInstance().getReference("leaderboard")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d(TAG, "onDataChange: calvin go here");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        Log.d(TAG, "onDataChange: ");
+    }
+
 
     public static LeaderBoardFragment getInstance() {
         if (instance == null)
