@@ -157,48 +157,48 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         //recycler view test
         Log.d(TAG, "find_view: create recycler");
-        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
-        recycler = findViewById(R.id.test);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
-        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //這可以印出資料庫完整資料
-//                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
-//                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
-//                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
-//                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
-//                }
-//                leader = snapshot.getValue(leaderboard.class);
-//                Log.d(TAG, "onDataChange: calvin3 " + leader.getName());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        }));
-        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
-                .setQuery(query, leaderboard.class).build();
-        adapter = new FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder>(options) {
-
-            @NonNull
-            @Override
-            public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
-                return new testHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull testHolder holder, int position, @NonNull leaderboard model) {
-                holder.date.setText(model.getDate());
-                holder.name.setText(model.getName());
-                holder.score.setText(model.getScore());
-            }
-        };
-        recycler.setAdapter(adapter);
+//        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
+//        recycler = findViewById(R.id.test);
+//        recycler.setHasFixedSize(true);
+//        recycler.setLayoutManager(new LinearLayoutManager(this));
+//        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
+//        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                //這可以印出資料庫完整資料
+////                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
+////                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+////                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
+////                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
+////                }
+////                leader = snapshot.getValue(leaderboard.class);
+////                Log.d(TAG, "onDataChange: calvin3 " + leader.getName());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        }));
+//        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
+//                .setQuery(query, leaderboard.class).build();
+//        adapter = new FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder>(options) {
+//
+//            @NonNull
+//            @Override
+//            public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+//                return new testHolder(view);
+//            }
+//
+//            @Override
+//            protected void onBindViewHolder(@NonNull testHolder holder, int position, @NonNull leaderboard model) {
+//                holder.date.setText(model.getDate());
+//                holder.name.setText(model.getName());
+//                holder.score.setText(model.getScore());
+//            }
+//        };
+//        recycler.setAdapter(adapter);
 
 
 
