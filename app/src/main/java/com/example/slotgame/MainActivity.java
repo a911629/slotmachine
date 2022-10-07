@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Score score = new Score();
@@ -43,14 +42,13 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     //recyclerview test
     private Query query;
     private DatabaseReference leaderRef;
-    private FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder> adapter;
+//    private FirebaseRecyclerAdapter<leaderboard, leaderboard> adapter;
     public RecyclerView recycler;
 
     //    private RecyclerView recyclerView;
 //    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
     public static final Random RANDOM = new Random();
-    private FirebaseAuth auth;
 
     public static long randomLong(long lower, long upper) {
 //        return (long) (RANDOM.nextDouble() * (upper - lower));
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         option_board = getSupportFragmentManager();
         leader_board = getSupportFragmentManager();
         list_board = getSupportFragmentManager();
-        auth = FirebaseAuth.getInstance();
     }
 
     public void bar(View view) {
@@ -245,20 +242,13 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     @Override
     protected void onStart() {
         super.onStart();
-        auth.addAuthStateListener(this);
 //        adapter.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        auth.removeAuthStateListener(this);
 //        adapter.stopListening();
-    }
-
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        Log.d(TAG, "onAuthStateChanged: auth login");
     }
 
     public void refresh_score() {
