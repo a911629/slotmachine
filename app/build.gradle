@@ -7,6 +7,15 @@ android {
     namespace 'com.example.slotgame'
     compileSdk 32
 
+    signingConfigs {
+        release {
+            storeFile file( rootProject.projectDir.absolutePath + '\\app\\key_slot.jks')
+            storePassword '112233'
+            keyPassword '112233'
+            keyAlias 'key0'
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.slotgame"
         minSdk 21
