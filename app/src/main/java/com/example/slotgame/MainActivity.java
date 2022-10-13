@@ -38,6 +38,43 @@ public class MainActivity extends AppCompatActivity {
     private boolean isStarted = false;
     private Wheel wheel1, wheel2, wheel3;
     private ImageView slot1, slot2, slot3;
+    private Chance chance = new Chance();
+
+//    private Wheel wheel1 = new Wheel(new Wheel.WheelListener() {
+//        @Override
+//        public void newImage(final int img) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    slot1.setImageResource(img);
+//                }
+//            });
+//        }
+//    }, 50, randomLong(150, 400));
+//
+//    private Wheel wheel2 = new Wheel(new Wheel.WheelListener() {
+//        @Override
+//        public void newImage(final int img) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    slot2.setImageResource(img);
+//                }
+//            });
+//        }
+//    }, 50, randomLong(150, 400));
+//
+//    private Wheel wheel3 = new Wheel(new Wheel.WheelListener() {
+//        @Override
+//        public void newImage(final int img) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    slot3.setImageResource(img);
+//                }
+//            });
+//        }
+//    }, 50, randomLong(150, 400));
 
     //recyclerview test
     private Query query;
@@ -49,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 //    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
     public static final Random RANDOM = new Random();
+    private int l_time = 0;
 
     public static long randomLong(long lower, long upper) {
 //        return (long) (RANDOM.nextDouble() * (upper - lower));
@@ -61,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         find_view();
         score.init_score();
+        chance.init();
         refresh_score();
 
         option_board = getSupportFragmentManager();
@@ -71,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     public void bar(View view) {
         Log.d(TAG, "bar: ");
 //        score.setRecord(7);
-        if (score.getBet() != 0)
+        if (score.getBet() != 0) {
             if (isStarted) {
                 Log.d(TAG, "bar: go stop");
                 wheel1.stopWheel();
@@ -81,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
                 if (wheel1.currentIndex == wheel2.currentIndex && wheel2.currentIndex == wheel3.currentIndex
                         && wheel1.currentIndex == wheel3.currentIndex) {
                     score.bingo(wheel1.currentIndex);
+                    chance.init();
                 } else {
+                    chance.add_chance();
                     Log.d(TAG, "bar: not bingo");
                 }
                 score.clean_bet();
@@ -98,10 +139,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-//            }, 200, randomLong(0, 200));
-//            }, 200, randomLong_t(1, 1));
-                }, 200, 200);
-
+                }, 50, randomLong(150, 400), chance);
                 wheel1.start();
 
                 wheel2 = new Wheel(new Wheel.WheelListener() {
@@ -114,10 +152,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }, 200, randomLong(150, 400));
-
-//            }, 200, 0);
-
+                }, 50, randomLong(150, 400), chance);
                 wheel2.start();
 
                 wheel3 = new Wheel(new Wheel.WheelListener() {
@@ -130,15 +165,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }, 200, randomLong(150, 400));
-
-//            }, 200, 0);
-
+                }, 50, randomLong(150, 400), chance);
                 wheel3.start();
 
 //            test.set_record();
                 isStarted = true;
             }
+        }
         refresh_score();
         // TODO:
         // score.setRecord(score.getBet());
@@ -151,77 +184,6 @@ public class MainActivity extends AppCompatActivity {
         slot1 = (ImageView) findViewById(R.id.slot1);
         slot2 = (ImageView) findViewById(R.id.slot2);
         slot3 = (ImageView) findViewById(R.id.slot3);
-
-        //recycler view test
-        Log.d(TAG, "find_view: create recycler");
-//        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
-//        recycler = findViewById(R.id.test);
-//        recycler.setHasFixedSize(true);
-//        recycler.setLayoutManager(new LinearLayoutManager(this));
-//        query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
-//        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                //這可以印出資料庫完整資料
-////                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
-////                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
-////                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
-////                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
-////                }
-////                leader = snapshot.getValue(leaderboard.class);
-////                Log.d(TAG, "onDataChange: calvin3 " + leader.getName());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        }));
-//        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
-//                .setQuery(query, leaderboard.class).build();
-//        adapter = new FirebaseRecyclerAdapter<leaderboard, MainActivity.testHolder>(options) {
-//
-//            @NonNull
-//            @Override
-//            public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
-//                return new testHolder(view);
-//            }
-//
-//            @Override
-//            protected void onBindViewHolder(@NonNull testHolder holder, int position, @NonNull leaderboard model) {
-//                holder.date.setText(model.getDate());
-//                holder.name.setText(model.getName());
-//                holder.score.setText(model.getScore());
-//            }
-//        };
-//        recycler.setAdapter(adapter);
-
-
-
-//        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(data) {
-//            @Override
-//            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
-//                super.onBindViewHolder(holder, position);
-//                holder.rank.setText(position);
-//                holder.date.setText(lead.getDate());
-//                holder.score.setText(lead.getScore());
-//                holder.name.setText(lead.getName());
-//            }
-//
-//            @Override
-//            public int getItemCount() {
-//                return 5;
-//            }
-//
-//            @NonNull
-//            @Override
-//            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
-//                return new leaderboardHolder(view);
-//            }
-//        };
-//        recyclerView.setAdapter(adapter);
     }
 
     class testHolder extends RecyclerView.ViewHolder {

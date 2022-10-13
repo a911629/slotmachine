@@ -11,12 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/leader_rank"
+        app:layout_constraintStart_toEndOf="@+id/leader_rank"
+        app:layout_constraintTop_toTopOf="@+id/leader_rank" />
 
     <TextView
         android:id="@+id/leader_date"
@@ -40,4 +38,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/leader_name"
         app:layout_constraintStart_toEndOf="@+id/leader_name"
         app:layout_constraintTop_toTopOf="@+id/leader_name" />
+
+    <TextView
+        android:id="@+id/leader_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

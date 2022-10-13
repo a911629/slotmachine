@@ -1,5 +1,6 @@
 package com.example.slotgame;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +44,6 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
     String name;
     int score;
     Date date;
-
     public List<leaderboard> leaderboards;
 //    private Query query;
     private DatabaseReference leaderRef;
@@ -112,6 +113,19 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
                 //這可以印出資料庫完整資料
                 Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
                 Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+
+//                try {
+//                    JSONArray array = new JSONArray(snapshot.getValue().toString());
+//                    for (int i = 0; i < array.length(); i++) {
+//                        JSONObject object = array.getJSONObject(i);
+//
+//                        leads.add(object)
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+
+
                 for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
                     Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
                     try {
@@ -121,13 +135,16 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
                                 jsonObject.getString("score"),
                                 jsonObject.getString("date"),
                                 jsonObject.getInt("rank"));
+                        leaderboards.add(lead);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    leaderboards.add(lead);
+                    leaderboards.add(i - 1,lead);
                 }
-
+                for (int i = 0; i < snapshot.getChildrenCount(); i++) {
+                    Log.d(TAG, "onDataChange: read " + i + " : " + leaderboards.get(i).getName());
+                }
             }
 
             @Override
@@ -138,14 +155,15 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
-//        Log.d(TAG, "init2: " + options.getSnapshots());
+        Log.d(TAG, "calvin test: " + options.getSnapshots());
         adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(options) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
                 super.onBindViewHolder(holder, position);
                 Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
 
-//                holder.rank.setText((position + 1) + "");
+                holder.rank.setText((position + 1) + "");
                 holder.date.setText(lead.getDate());
                 holder.score.setText(lead.getScore() + "");
                 holder.name.setText(lead.getName());
@@ -164,14 +182,14 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
     }
 
     class leaderboardHolder extends RecyclerView.ViewHolder {
-        //        TextView rank;
+        TextView rank;
         TextView name;
         TextView score;
         TextView date;
 
         public leaderboardHolder(@NonNull View itemView) {
             super(itemView);
-//            rank = itemView.findViewById(R.id.leader_rank);
+            rank = itemView.findViewById(R.id.leader_rank);
             name = itemView.findViewById(R.id.leader_name);
             score = itemView.findViewById(R.id.leader_score);
             date = itemView.findViewById(R.id.leader_date);
