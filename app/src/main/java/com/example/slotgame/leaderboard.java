@@ -46,11 +46,11 @@ public class leaderboard {
         this.date = date;
     }
 
-//    public int getRank() {
-//        return rank;
-//    }
-//
-//    public void setRank(int rank) {
-//        this.rank = rank;
-//    }
+    public String  getRank() {
+        return Integer.toString(rank);
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 }

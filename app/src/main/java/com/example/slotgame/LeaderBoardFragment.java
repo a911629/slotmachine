@@ -105,69 +105,18 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
         leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
         recycler = view.findViewById(R.id.leaderboard);
 //        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                leaderboard lead = null;
-                //這可以印出資料庫完整資料
-                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
-                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-//                try {
-//                    JSONArray array = new JSONArray(snapshot.getValue().toString());
-//                    for (int i = 0; i < array.length(); i++) {
-//                        JSONObject object = array.getJSONObject(i);
-//
-//                        leads.add(object)
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
-
-                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
-                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
-                    try {
-                        jsonObject = new JSONObject(snapshot.child(i + "").getValue().toString());
-                        Log.d(TAG, "onDataChange: NO." + i + " name:" + jsonObject.getString("name"));
-                        lead = new leaderboard(jsonObject.getString("name"),
-                                jsonObject.getString("score"),
-                                jsonObject.getString("date"),
-                                jsonObject.getInt("rank"));
-                        leaderboards.add(lead);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    leaderboards.add(i - 1,lead);
-                }
-                for (int i = 0; i < snapshot.getChildrenCount(); i++) {
-                    Log.d(TAG, "onDataChange: read " + i + " : " + leaderboards.get(i).getName());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        }));
+        //10/14
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
-        Log.d(TAG, "calvin test: " + options.getSnapshots());
         adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(options) {
-            @SuppressLint("SetTextI18n")
             @Override
-            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
-                super.onBindViewHolder(holder, position);
-                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
-
-                holder.rank.setText((position + 1) + "");
-                holder.date.setText(lead.getDate());
-                holder.score.setText(lead.getScore() + "");
-                holder.name.setText(lead.getName());
-                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
+            protected void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard model) {
+                holder.name.setText(model.getName());
+                holder.score.setText(model.getScore());
+                holder.date.setText(model.getDate());
             }
 
             @NonNull
@@ -178,18 +127,92 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
             }
         };
         recycler.setAdapter(adapter);
+
+
+//        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                leaderboard lead = null;
+//                //這可以印出資料庫完整資料
+//                Log.d(TAG, "onDataChange: calvin1 " + snapshot.getValue().toString());
+//                Log.d(TAG, "onDataChange: calvin2 " + snapshot.getChildrenCount());
+//
+////                try {
+////                    JSONArray array = new JSONArray(snapshot.getValue().toString());
+////                    for (int i = 0; i < array.length(); i++) {
+////                        JSONObject object = array.getJSONObject(i);
+////
+////                        leads.add(object)
+////                    }
+////                } catch (JSONException e) {
+////                    e.printStackTrace();
+////                }
+//
+//
+//                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
+//                    Log.d(TAG, "onDataChange: " +  snapshot.child(i + "").getValue());
+//                    try {
+//                        jsonObject = new JSONObject(snapshot.child(i + "").getValue().toString());
+//                        Log.d(TAG, "onDataChange: NO." + i + " name:" + jsonObject.getString("name"));
+//                        lead = new leaderboard(jsonObject.getString("name"),
+//                                jsonObject.getString("score"),
+//                                jsonObject.getString("date"),
+//                                jsonObject.getInt("rank"));
+//                        leaderboards.add(lead);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    leaderboards.add(i - 1,lead);
+//                }
+//                for (int i = 0; i < snapshot.getChildrenCount(); i++) {
+//                    Log.d(TAG, "onDataChange: read " + i + " : " + leaderboards.get(i).getName());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        }));
+//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
+//        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
+//                .setQuery(query, leaderboard.class).build();
+//        Log.d(TAG, "calvin test: " + options.getSnapshots());
+//        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(options) {
+//            @SuppressLint("SetTextI18n")
+//            @Override
+//            public void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard lead) {
+//                super.onBindViewHolder(holder, position);
+//                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
+//
+//                holder.rank.setText((position + 1) + "");
+//                holder.date.setText(lead.getDate());
+//                holder.score.setText(lead.getScore() + "");
+//                holder.name.setText(lead.getName());
+//                Log.d(TAG, "onBindViewHolder: calvin" + lead.getName());
+//            }
+//
+//            @NonNull
+//            @Override
+//            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+//                return new leaderboardHolder(view);
+//            }
+//        };
+//        recycler.setAdapter(adapter);
 //        Log.d(TAG, "init end");
     }
 
     class leaderboardHolder extends RecyclerView.ViewHolder {
-        TextView rank;
+//        TextView rank;
         TextView name;
         TextView score;
         TextView date;
 
         public leaderboardHolder(@NonNull View itemView) {
             super(itemView);
-            rank = itemView.findViewById(R.id.leader_rank);
+//            rank = itemView.findViewById(R.id.leader_rank);
             name = itemView.findViewById(R.id.leader_name);
             score = itemView.findViewById(R.id.leader_score);
             date = itemView.findViewById(R.id.leader_date);

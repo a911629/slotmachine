@@ -99,4 +99,11 @@ public class Score {
     public void setRecord(int record) {
         this.record = record;
     }
+
+    public boolean isEmpty() {
+        if (current == 0 && bet == 0)
+            return true;
+        else
+            return false;
+    }
 }

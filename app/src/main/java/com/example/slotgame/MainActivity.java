@@ -2,16 +2,21 @@ package com.example.slotgame;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -79,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     //recyclerview test
     private Query query;
     private DatabaseReference leaderRef;
-//    private FirebaseRecyclerAdapter<leaderboard, leaderboard> adapter;
+    //    private FirebaseRecyclerAdapter<leaderboard, leaderboard> adapter;
     public RecyclerView recycler;
 
     //    private RecyclerView recyclerView;
@@ -87,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final Random RANDOM = new Random();
     private int l_time = 0;
+    private FirebaseRecyclerAdapter<leaderboard, testHolder> adapter;
+    private RecyclerView test;
+    @SuppressLint("WrongViewCast")
+    private ConstraintLayout lead;
 
     public static long randomLong(long lower, long upper) {
 //        return (long) (RANDOM.nextDouble() * (upper - lower));
@@ -127,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
                 }
                 score.clean_bet();
                 isStarted = false;
+                if (score.isEmpty()) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("遊戲結束")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            }).show();
+                }
             } else {
                 Log.d(TAG, "bar: go start");
                 wheel1 = new Wheel(new Wheel.WheelListener() {
@@ -177,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
         // score.setRecord(score.getBet());
     }
 
+    @SuppressLint("WrongViewCast")
     public void find_view() {
         score_t = findViewById(R.id.score);
         bet_t = findViewById(R.id.bet);
@@ -184,33 +204,61 @@ public class MainActivity extends AppCompatActivity {
         slot1 = (ImageView) findViewById(R.id.slot1);
         slot2 = (ImageView) findViewById(R.id.slot2);
         slot3 = (ImageView) findViewById(R.id.slot3);
+
+        lead = findViewById(R.id.lead_board);
+
+        // 10.14 測試開始 成功
+        test = findViewById(R.id.test);
+        test.setHasFixedSize(true);
+        test.setLayoutManager(new LinearLayoutManager(this));
+        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
+        FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
+                .setQuery(query, leaderboard.class).build();
+        adapter = new FirebaseRecyclerAdapter<leaderboard, testHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull testHolder holder, int position, @NonNull leaderboard model) {
+                holder.name.setText(model.getName());
+                holder.date.setText(model.getDate());
+                holder.score.setText(model.getScore());
+                holder.rank.setText(model.getRank());
+            }
+
+            @NonNull
+            @Override
+            public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
+                return new testHolder(view);
+            }
+        };
+        test.setAdapter(adapter);
     }
 
     class testHolder extends RecyclerView.ViewHolder {
-        //        TextView rank;
+        TextView rank;
         TextView name;
         TextView score;
         TextView date;
 
         public testHolder(@NonNull View itemView) {
             super(itemView);
-//            rank = itemView.findViewById(R.id.leader_rank);
+            rank = itemView.findViewById(R.id.leader_rank);
             name = itemView.findViewById(R.id.leader_name);
             score = itemView.findViewById(R.id.leader_score);
             date = itemView.findViewById(R.id.leader_date);
         }
     }
+    // 10.14 測試結束
 
     @Override
     protected void onStart() {
         super.onStart();
-//        adapter.startListening();
+        adapter.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        adapter.stopListening();
+        adapter.stopListening();
     }
 
     public void refresh_score() {
@@ -257,40 +305,60 @@ public class MainActivity extends AppCompatActivity {
     public void add_bet5(View view) {
         Log.d(TAG, "add_bet5: ");
         refresh_score();
+//        if (score.getCurrent() < 5)
+//            return;
+        if (score.getBet() == 50 || score.getCurrent() == 0)
+            return;
         if (score.getCurrent() < 5)
-            return;
-        if (score.getBet() > 45)
-            return;
-        score.compute(5);
+            score.compute(score.getCurrent());
+        else if (score.getBet() > 45) {
+            score.compute(50 - score.getBet());
+//            return;
+        } else {
+            score.compute(5);
+        }
         refresh_score();
     }
 
     public void minus_bet5(View view) {
-        Log.d(TAG, "add_bet5: ");
+        Log.d(TAG, "minus_bet5: ");
         refresh_score();
-        if (score.getBet() < 5)
+        if (score.getBet() == 0)
             return;
-        score.compute(-5);
+
+        if (score.getBet() < 5) {
+            score.compute(-1 * score.getBet());
+        } else
+            score.compute(-5);
         refresh_score();
     }
 
     public void add_bet10(View view) {
         Log.d(TAG, "add_bet10: ");
         refresh_score();
+        if (score.getBet() == 50 || score.getCurrent() == 0)
+            return;
         if (score.getCurrent() < 10)
-            return;
-        if (score.getBet() > 40)
-            return;
-        score.compute(10);
+            score.compute(score.getCurrent());
+        else if (score.getBet() > 40) {
+            score.compute(50 - score.getBet());
+//            return;
+        } else {
+            score.compute(10);
+        }
         refresh_score();
     }
 
     public void minus_bet10(View view) {
-        Log.d(TAG, "add_bet10: ");
+        Log.d(TAG, "minus_bet10: ");
         refresh_score();
-        if (score.getBet() < 10)
+        if (score.getBet() == 0)
             return;
-        score.compute(-10);
+
+        if (score.getBet() < 10)
+            score.compute(-1 * score.getBet());
+        else
+            score.compute(-10);
         refresh_score();
     }
 
@@ -317,24 +385,31 @@ public class MainActivity extends AppCompatActivity {
     public void leader_board(View view) {
         readLeaderBoardInfo();
 
-        if (LeaderBoardFragment.getInstance().isVisible()) {
-            Log.d(TAG, "leader_board: close");
-            Fragment leaderBoardFragment = getSupportFragmentManager().findFragmentByTag("leader");
+        if(lead.getVisibility() == View.GONE)
+            lead.setVisibility(View.VISIBLE);
+        else
+            lead.setVisibility(View.GONE);
 
-            if (leaderBoardFragment != null) {
-                leader_board.beginTransaction().remove(leaderBoardFragment).commit();
-            }
-        } else {
-            Log.d(TAG, "leader_board: open");
-            if (OptionFragment.getInstance().isVisible()) {
-                Log.d(TAG, "option_board: close");
-                Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
-                if (optionBoardFragment != null) {
-                    option_board.beginTransaction().remove(optionBoardFragment).commit();
-                }
-            }
-            leader_board.beginTransaction().add(R.id.board, LeaderBoardFragment.getInstance(), "leader").commit();
-        }
+//        if (LeaderBoardFragment.getInstance().isVisible()) {
+//            Log.d(TAG, "leader_board: close");
+//            lead.setSystemUiVisibility(0);
+//            Fragment leaderBoardFragment = getSupportFragmentManager().findFragmentByTag("leader");
+//
+//            if (leaderBoardFragment != null) {
+//                leader_board.beginTransaction().remove(leaderBoardFragment).commit();
+//            }
+//        } else {
+//            Log.d(TAG, "leader_board: open");
+//            lead.setSystemUiVisibility(1);
+//            if (OptionFragment.getInstance().isVisible()) {
+//                Log.d(TAG, "option_board: close");
+//                Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
+//                if (optionBoardFragment != null) {
+//                    option_board.beginTransaction().remove(optionBoardFragment).commit();
+//                }
+//            }
+//            leader_board.beginTransaction().add(R.id.board, LeaderBoardFragment.getInstance(), "leader").commit();
+//        }
     }
 
     public void list_board(View view) {
