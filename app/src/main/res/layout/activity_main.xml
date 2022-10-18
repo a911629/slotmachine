@@ -202,7 +202,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#FFFAFA"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -296,23 +296,23 @@
             app:layout_constraintGuide_percent="0.2" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="GetLeaderBoard"
-            android:text="get"
+            android:onClick="SetLeaderBoard"
+            android:text="set"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:onClick="SetLeaderBoard"
-            android:text="set"
+            android:layout_marginEnd="8dp"
+            android:onClick="sort"
+            android:text="sort"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button2" />
+            app:layout_constraintEnd_toStartOf="@+id/button4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

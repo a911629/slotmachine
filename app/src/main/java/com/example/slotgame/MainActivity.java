@@ -5,25 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseArray;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +28,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Wheel wheel1, wheel2, wheel3;
     private ImageView slot1, slot2, slot3;
     private Chance chance = new Chance();
+    private long[] total_score = new long[5];
 
     //recyclerview test
     private Query query;
@@ -362,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
     public void leader_board(View view) {
 //        readLeaderBoardInfo();
 
-        if(lead.getVisibility() == View.GONE)
+        if (lead.getVisibility() == View.GONE)
             lead.setVisibility(View.VISIBLE);
         else
             lead.setVisibility(View.GONE);
@@ -390,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void list_board(View view) {
-        if(lead.getVisibility() == View.VISIBLE)
+        if (lead.getVisibility() == View.VISIBLE)
             lead.setVisibility(View.GONE);
         if (ListFragment.getInstance().isVisible()) {
             Log.d(TAG, "list_board close");
@@ -411,39 +409,251 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void GetLeaderBoard(View view) {
-        //讀取五號
-//                .addValueEventListener(leaderListener);
-        DatabaseReference leaderRef = (DatabaseReference) FirebaseDatabase.getInstance()
-                .getReference("leaderboard")
-                .child("5")
-                .child("score");
-        leaderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//    public void GetLeaderBoard(View view) {
+//        //讀取五號
+//        DatabaseReference leaderRef = (DatabaseReference) FirebaseDatabase.getInstance()
+//                .getReference("leaderboard")
+//                .child("5")
+//                .child("score");
+//        leaderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.getValue() == null) {
+//                    Log.d(TAG, "onDataChange: got null??");
+//                    return;
+//                }
+//                long score = (long) snapshot.getValue();
+//                Log.d(TAG, "onDataChange: score read back = " + score);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//    }
 
+    public void SetLeaderBoard(View view) {
+//        final Object[] test = new Object[1];
+//        設定數值
+//        DatabaseReference leaderRef_w = (DatabaseReference) FirebaseDatabase.getInstance()
+//                .getReference("leaderboard")
+//                .child("4")
+//                .child("score");
+//        leaderRef_w.setValue(110);
+//        CopyLeaderBoard(5,1);
+        ReadLeaderBoard();
+        SwapLeaderBoard(1, 2);
+    }
+
+    public void CopyLeaderBoard(int a, int b) {
+//        從a複製到b
+        int[] sss = new int[5];
+        DatabaseReference leader[] = new DatabaseReference[5];
+        for (int i = 1; i <= 5; i++) {
+            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+                    .getReference("leaderboard")
+                    .child(Integer.toString(i));
+        }
+        leader[a - 1].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue() == null) {
-                    Log.d(TAG, "onDataChange: got null??");
-                    return;
-                }
-                long score = (long) snapshot.getValue();
-                Log.d(TAG, "onDataChange: score read back = " + score);
+                leader[b - 1].child("score").setValue(snapshot.child("score").getValue());
+                leader[b - 1].child("name").setValue(snapshot.child("name").getValue());
+                leader[b - 1].child("date").setValue(snapshot.child("date").getValue());
+//                leader[b-1].child("rank").setValue(snapshot.child("rank").getValue());
+                leader[b - 1].child("rank").setValue(b);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
 
-    public void SetLeaderBoard(View view) {
-        DatabaseReference leaderRef_w = (DatabaseReference) FirebaseDatabase.getInstance()
-                .getReference("leaderboard")
-                .child("5")
-                .child("score");
-        leaderRef_w.setValue(110);
+    public void ReadLeaderBoard() {
+        DatabaseReference leader[] = new DatabaseReference[5];
+//        long[] s = new long[5];
+        for (int i = 1; i <= 5; i++) {
+            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+                    .getReference("leaderboard")
+                    .child(Integer.toString(i));
+        }
+
+        leader[0].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 0 | " + total_score[0]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        leader[1].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 1 | " + total_score[1]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[2].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(),10);
+                Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[3].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 3 | " + total_score[3]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[4].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 4 | " + total_score[4]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
+
+    public void SwapLeaderBoard(int a, int b) {
+        DatabaseReference leader[] = new DatabaseReference[5];
+
+        for (int i = 1; i <= 5; i++) {
+            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+                    .getReference("leaderboard")
+                    .child(Integer.toString(i));
+        }
+
+    }
+
+    public int sort(View view) {
+
+        Arrays.sort(total_score);
+
+        long[] b = new long[total_score.length];
+        int j = total_score.length;
+        for (int i = 0; i < total_score.length; i++) {
+            b[j - 1] = total_score[i];
+            j -= 1;
+        }
+
+        // printing the reversed array
+        System.out.println("Reversed array is: \n");
+        for (int k = 0; k < total_score.length; k++) {
+            Log.d(TAG, "sort: " + b[k]);
+        }
+
+        DatabaseReference leader[] = new DatabaseReference[5];
+//        long[] s = new long[5];
+        for (int i = 1; i <= 5; i++) {
+            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+                    .getReference("leaderboard")
+                    .child(Integer.toString(i));
+        }
+
+        leader[0].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 0 | " + total_score[0]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        leader[1].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 1 | " + total_score[1]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[2].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(),10);
+                Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[3].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 3 | " + total_score[3]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        leader[4].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+                Log.d(TAG, "onDataChange: 4 | " + total_score[4]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return 0;
+    }
+
+//    public boolean bigger(int a, int b) {
+//        DatabaseReference leader[] = new DatabaseReference[5];
+//        for (int i = 1; i <= 5; i++) {
+//            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+//                    .getReference("leaderboard")
+//                    .child(Integer.toString(i));
+//        }
+//    }
 
     public void quit(View view) {
         Log.d(TAG, "quit: go");
