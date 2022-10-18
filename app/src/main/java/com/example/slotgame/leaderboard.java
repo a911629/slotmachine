@@ -2,20 +2,20 @@ package com.example.slotgame;
 
 public class leaderboard {
     String name;
-    String score;
+    int score;
     String date;
     int rank;
 
     public leaderboard() {
     }
 
-    public leaderboard(String name, String score, String date) {
+    public leaderboard(String name, int score, String date) {
         this.name = name;
         this.score = score;
         this.date = date;
     }
 
-    public leaderboard(String name, String score, String date, int rank) {
+    public leaderboard(String name, int score, String date, int rank) {
         this.name = name;
         this.score = score;
         this.date = date;
@@ -31,10 +31,10 @@ public class leaderboard {
     }
 
     public String getScore() {
-        return score;
+        return Integer.toString(score);
     }
 
-    public void setScore(String score) {
+    public void setScore(int score) {
         this.score = score;
     }
 

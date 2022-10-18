@@ -106,4 +106,8 @@ public class Score {
         else
             return false;
     }
+
+    public void load_score() {
+
+    }
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseArray;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,42 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView slot1, slot2, slot3;
     private Chance chance = new Chance();
 
-//    private Wheel wheel1 = new Wheel(new Wheel.WheelListener() {
-//        @Override
-//        public void newImage(final int img) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    slot1.setImageResource(img);
-//                }
-//            });
-//        }
-//    }, 50, randomLong(150, 400));
-//
-//    private Wheel wheel2 = new Wheel(new Wheel.WheelListener() {
-//        @Override
-//        public void newImage(final int img) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    slot2.setImageResource(img);
-//                }
-//            });
-//        }
-//    }, 50, randomLong(150, 400));
-//
-//    private Wheel wheel3 = new Wheel(new Wheel.WheelListener() {
-//        @Override
-//        public void newImage(final int img) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    slot3.setImageResource(img);
-//                }
-//            });
-//        }
-//    }, 50, randomLong(150, 400));
-
     //recyclerview test
     private Query query;
     private DatabaseReference leaderRef;
@@ -94,8 +62,22 @@ public class MainActivity extends AppCompatActivity {
     private int l_time = 0;
     private FirebaseRecyclerAdapter<leaderboard, testHolder> adapter;
     private RecyclerView test;
-    @SuppressLint("WrongViewCast")
     private ConstraintLayout lead;
+
+//    private ValueEventListener leaderListener = new ValueEventListener() {
+//        @Override
+//        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//            if (snapshot.getValue() == null)
+//                return;
+//            long score = (long) snapshot.getValue();
+//            Log.d(TAG, "onDataChange: calvin score " + score);
+//        }
+//
+//        @Override
+//        public void onCancelled(@NonNull DatabaseError error) {
+//
+//        }
+//    };
 
     public static long randomLong(long lower, long upper) {
 //        return (long) (RANDOM.nextDouble() * (upper - lower));
@@ -196,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         // score.setRecord(score.getBet());
     }
 
-    @SuppressLint("WrongViewCast")
     public void find_view() {
         score_t = findViewById(R.id.score);
         bet_t = findViewById(R.id.bet);
@@ -305,15 +286,12 @@ public class MainActivity extends AppCompatActivity {
     public void add_bet5(View view) {
         Log.d(TAG, "add_bet5: ");
         refresh_score();
-//        if (score.getCurrent() < 5)
-//            return;
         if (score.getBet() == 50 || score.getCurrent() == 0)
             return;
         if (score.getCurrent() < 5)
             score.compute(score.getCurrent());
         else if (score.getBet() > 45) {
             score.compute(50 - score.getBet());
-//            return;
         } else {
             score.compute(5);
         }
@@ -342,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
             score.compute(score.getCurrent());
         else if (score.getBet() > 40) {
             score.compute(50 - score.getBet());
-//            return;
         } else {
             score.compute(10);
         }
@@ -383,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void leader_board(View view) {
-        readLeaderBoardInfo();
+//        readLeaderBoardInfo();
 
         if(lead.getVisibility() == View.GONE)
             lead.setVisibility(View.VISIBLE);
@@ -413,6 +390,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void list_board(View view) {
+        if(lead.getVisibility() == View.VISIBLE)
+            lead.setVisibility(View.GONE);
         if (ListFragment.getInstance().isVisible()) {
             Log.d(TAG, "list_board close");
             Fragment listBoardFragment = getSupportFragmentManager().findFragmentByTag("list");
@@ -432,8 +411,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void readLeaderBoardInfo() {
-        //TODO: read datebase
+    public void GetLeaderBoard(View view) {
+        //讀取五號
+//                .addValueEventListener(leaderListener);
+        DatabaseReference leaderRef = (DatabaseReference) FirebaseDatabase.getInstance()
+                .getReference("leaderboard")
+                .child("5")
+                .child("score");
+        leaderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() == null) {
+                    Log.d(TAG, "onDataChange: got null??");
+                    return;
+                }
+                long score = (long) snapshot.getValue();
+                Log.d(TAG, "onDataChange: score read back = " + score);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    public void SetLeaderBoard(View view) {
+        DatabaseReference leaderRef_w = (DatabaseReference) FirebaseDatabase.getInstance()
+                .getReference("leaderboard")
+                .child("5")
+                .child("score");
+        leaderRef_w.setValue(110);
     }
 
 
