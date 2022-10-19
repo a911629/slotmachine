@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.util.ArrayUtils;
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -190,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
         test = findViewById(R.id.test);
         test.setHasFixedSize(true);
         test.setLayoutManager(new LinearLayoutManager(this));
-        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
+        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(5);
+//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToFirst(5);
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
         adapter = new FirebaseRecyclerAdapter<leaderboard, testHolder>(options) {
@@ -199,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
                 holder.name.setText(model.getName());
                 holder.date.setText(model.getDate());
                 holder.score.setText(model.getScore());
-                holder.rank.setText(model.getRank());
+//                holder.rank.setText(model.getRank());
+                holder.rank.setText(Integer.toString(position+1));
             }
 
             @NonNull
@@ -358,33 +360,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void leader_board(View view) {
-//        readLeaderBoardInfo();
-
         if (lead.getVisibility() == View.GONE)
             lead.setVisibility(View.VISIBLE);
         else
             lead.setVisibility(View.GONE);
-
-//        if (LeaderBoardFragment.getInstance().isVisible()) {
-//            Log.d(TAG, "leader_board: close");
-//            lead.setSystemUiVisibility(0);
-//            Fragment leaderBoardFragment = getSupportFragmentManager().findFragmentByTag("leader");
-//
-//            if (leaderBoardFragment != null) {
-//                leader_board.beginTransaction().remove(leaderBoardFragment).commit();
-//            }
-//        } else {
-//            Log.d(TAG, "leader_board: open");
-//            lead.setSystemUiVisibility(1);
-//            if (OptionFragment.getInstance().isVisible()) {
-//                Log.d(TAG, "option_board: close");
-//                Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
-//                if (optionBoardFragment != null) {
-//                    option_board.beginTransaction().remove(optionBoardFragment).commit();
-//                }
-//            }
-//            leader_board.beginTransaction().add(R.id.board, LeaderBoardFragment.getInstance(), "leader").commit();
-//        }
+        if (OptionFragment.getInstance().isVisible()) {
+            Log.d(TAG, "option_board: close");
+            Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
+            if (optionBoardFragment != null) {
+                option_board.beginTransaction().remove(optionBoardFragment).commit();
+            }
+        }
     }
 
     public void list_board(View view) {
@@ -441,28 +427,42 @@ public class MainActivity extends AppCompatActivity {
 //                .child("4")
 //                .child("score");
 //        leaderRef_w.setValue(110);
-//        CopyLeaderBoard(5,1);
-        ReadLeaderBoard();
-        SwapLeaderBoard(1, 2);
+        SwapLeaderBoard(3,2);
+//        ReadLeaderBoard();
+//        SwapLeaderBoard(1, 2);
     }
 
-    public void CopyLeaderBoard(int a, int b) {
-//        從a複製到b
-        int[] sss = new int[5];
+    public void SwapLeaderBoard(int a, int b) {
+        Log.d(TAG, "SwapLeaderBoard: go here a:b " + a + ":" + b);
+//        a b 互換
         DatabaseReference leader[] = new DatabaseReference[5];
+        DatabaseReference temp = FirebaseDatabase.getInstance().getReference().child("temp");
+
         for (int i = 1; i <= 5; i++) {
             leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
                     .getReference("leaderboard")
                     .child(Integer.toString(i));
         }
-        leader[a - 1].addListenerForSingleValueEvent(new ValueEventListener() {
+
+        leader[a].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                leader[b - 1].child("score").setValue(snapshot.child("score").getValue());
-                leader[b - 1].child("name").setValue(snapshot.child("name").getValue());
-                leader[b - 1].child("date").setValue(snapshot.child("date").getValue());
-//                leader[b-1].child("rank").setValue(snapshot.child("rank").getValue());
-                leader[b - 1].child("rank").setValue(b);
+                temp.child("score").setValue(snapshot.child("score").getValue());
+//                temp.child("name").setValue(snapshot.child("name").getValue());
+//                temp.child("date").setValue(snapshot.child("date").getValue());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        leader[b].addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                leader[a].child("score").setValue(snapshot.child("score").getValue());
+//                leader[a].child("name").setValue(snapshot.child("name").getValue());
+//                leader[a].child("date").setValue(snapshot.child("date").getValue());
             }
 
             @Override
@@ -470,6 +470,33 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        temp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                leader[b].child("score").setValue(snapshot.child("score").getValue());
+//                leader[b].child("name").setValue(snapshot.child("name").getValue());
+//                leader[b].child("date").setValue(snapshot.child("date").getValue());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void AddLeaderBoard(View view) {
+        DatabaseReference leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
+        leaderRef.child("test").child("name").setValue("test");
+        leaderRef.child("test").child("score").setValue(1000);
+        leaderRef.child("test").child("date").setValue("20220222");
+        adapter.notifyDataSetChanged();
+//        adapter.notifyItemChanged(1);
+//        adapter.notifyItemChanged(2);
+//        adapter.notifyItemChanged(3);
+//        adapter.notifyItemChanged(4);
+
     }
 
     public void ReadLeaderBoard() {
@@ -544,44 +571,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public void SwapLeaderBoard(int a, int b) {
-        DatabaseReference leader[] = new DatabaseReference[5];
-
-        for (int i = 1; i <= 5; i++) {
-            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
-                    .getReference("leaderboard")
-                    .child(Integer.toString(i));
-        }
-
-    }
-
     public int sort(View view) {
 
-        Arrays.sort(total_score);
+        Log.d(TAG, "sort: go here");
+        
+//        Arrays.sort(total_score);
 
-        long[] b = new long[total_score.length];
-        int j = total_score.length;
-        for (int i = 0; i < total_score.length; i++) {
-            b[j - 1] = total_score[i];
-            j -= 1;
-        }
+//        long[] b = new long[total_score.length];
+//        int j = total_score.length;
+//        for (int i = 0; i < total_score.length; i++) {
+//            b[j - 1] = total_score[i];
+//            j -= 1;
+//        }
 
         // printing the reversed array
-        System.out.println("Reversed array is: \n");
-        for (int k = 0; k < total_score.length; k++) {
-            Log.d(TAG, "sort: " + b[k]);
-        }
+//        System.out.println("Reversed array is: \n");
+//        for (int k = 0; k < total_score.length; k++) {
+//            Log.d(TAG, "sort: " + b[k]);
+//        }
 
-        DatabaseReference leader[] = new DatabaseReference[5];
+        DatabaseReference LeaderRef[] = new DatabaseReference[5];
 //        long[] s = new long[5];
         for (int i = 1; i <= 5; i++) {
-            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+            LeaderRef[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
                     .getReference("leaderboard")
                     .child(Integer.toString(i));
         }
 
-        leader[0].addListenerForSingleValueEvent(new ValueEventListener() {
+        LeaderRef[0].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
@@ -594,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        leader[1].addListenerForSingleValueEvent(new ValueEventListener() {
+        LeaderRef[1].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
@@ -606,7 +623,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        leader[2].addListenerForSingleValueEvent(new ValueEventListener() {
+        LeaderRef[2].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(),10);
@@ -618,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        leader[3].addListenerForSingleValueEvent(new ValueEventListener() {
+        LeaderRef[3].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
@@ -630,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        leader[4].addListenerForSingleValueEvent(new ValueEventListener() {
+        LeaderRef[4].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
@@ -642,6 +659,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+//        for (int i = 3; i >= 1; i--) {
+            for (int j = 0; j < 4; j++) {
+//                Log.d(TAG, "sort: i:j " + i +":"+ j);
+                Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] +":"+ total_score[j + 1]);
+                if (total_score[j] < total_score[j + 1]) {
+                    SwapLeaderBoard(j, j + 1);
+                }
+            }
+//        }
 
         return 0;
     }
