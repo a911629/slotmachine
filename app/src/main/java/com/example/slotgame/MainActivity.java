@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.common.ChangeEventType;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseRecyclerAdapter<leaderboard, testHolder> adapter;
     private RecyclerView test;
     private ConstraintLayout lead;
+    private int RankNumber = 5;
 
 //    private ValueEventListener leaderListener = new ValueEventListener() {
 //        @Override
@@ -189,9 +191,14 @@ public class MainActivity extends AppCompatActivity {
         // 10.14 測試開始 成功
         test = findViewById(R.id.test);
         test.setHasFixedSize(true);
-        test.setLayoutManager(new LinearLayoutManager(this));
-        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(5);
-//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToFirst(5);
+
+        // 將用來顯示的 layout 反向
+        LinearLayoutManager ln = new LinearLayoutManager(this);
+        ln.setReverseLayout(true);
+        test.setLayoutManager(ln);
+
+//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score");
+        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(RankNumber);
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
         adapter = new FirebaseRecyclerAdapter<leaderboard, testHolder>(options) {
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 holder.date.setText(model.getDate());
                 holder.score.setText(model.getScore());
 //                holder.rank.setText(model.getRank());
-                holder.rank.setText(Integer.toString(position+1));
+                holder.rank.setText(Integer.toString(RankNumber - position));
             }
 
             @NonNull
@@ -209,6 +216,12 @@ public class MainActivity extends AppCompatActivity {
             public testHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = getLayoutInflater().inflate(R.layout.leader_info, parent, false);
                 return new testHolder(view);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull ChangeEventType type, @NonNull DataSnapshot snapshot, int newIndex, int oldIndex) {
+                super.onChildChanged(type, snapshot, newIndex, oldIndex);
+                adapter.notifyDataSetChanged();
             }
         };
         test.setAdapter(adapter);
@@ -427,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
 //                .child("4")
 //                .child("score");
 //        leaderRef_w.setValue(110);
-        SwapLeaderBoard(3,2);
+        SwapLeaderBoard(3, 2);
 //        ReadLeaderBoard();
 //        SwapLeaderBoard(1, 2);
     }
@@ -489,14 +502,8 @@ public class MainActivity extends AppCompatActivity {
     public void AddLeaderBoard(View view) {
         DatabaseReference leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
         leaderRef.child("test").child("name").setValue("test");
-        leaderRef.child("test").child("score").setValue(1000);
+        leaderRef.child("test").child("score").setValue(250);
         leaderRef.child("test").child("date").setValue("20220222");
-        adapter.notifyDataSetChanged();
-//        adapter.notifyItemChanged(1);
-//        adapter.notifyItemChanged(2);
-//        adapter.notifyItemChanged(3);
-//        adapter.notifyItemChanged(4);
-
     }
 
     public void ReadLeaderBoard() {
@@ -536,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
         leader[2].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(),10);
+                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
                 Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
             }
 
@@ -574,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
     public int sort(View view) {
 
         Log.d(TAG, "sort: go here");
-        
+
 //        Arrays.sort(total_score);
 
 //        long[] b = new long[total_score.length];
@@ -626,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
         LeaderRef[2].addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(),10);
+                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
                 Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
             }
 
@@ -661,13 +668,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 //        for (int i = 3; i >= 1; i--) {
-            for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 4; j++) {
 //                Log.d(TAG, "sort: i:j " + i +":"+ j);
-                Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] +":"+ total_score[j + 1]);
-                if (total_score[j] < total_score[j + 1]) {
-                    SwapLeaderBoard(j, j + 1);
-                }
+            Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] + ":" + total_score[j + 1]);
+            if (total_score[j] < total_score[j + 1]) {
+                SwapLeaderBoard(j, j + 1);
             }
+        }
 //        }
 
         return 0;
