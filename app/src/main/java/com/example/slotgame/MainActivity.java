@@ -35,10 +35,12 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String VERSION = "Version 0.0.1";
     private static final String TAG = MainActivity.class.getSimpleName();
     private Score score = new Score();
     private TextView score_t;
     private TextView bet_t;
+    private TextView Ver;
     private FragmentManager option_board;
     private FragmentManager leader_board;
     private FragmentManager list_board;
@@ -99,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void bar(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "bar: ");
 //        score.setRecord(7);
         if (score.getBet() != 0) {
@@ -179,8 +184,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void find_view() {
+        final DatabaseReference[] tempRef = new DatabaseReference[1];
         score_t = findViewById(R.id.score);
         bet_t = findViewById(R.id.bet);
+        Ver = findViewById(R.id.version);
+        Ver.setText(VERSION);
 
         slot1 = (ImageView) findViewById(R.id.slot1);
         slot2 = (ImageView) findViewById(R.id.slot2);
@@ -197,8 +205,22 @@ public class MainActivity extends AppCompatActivity {
         ln.setReverseLayout(true);
         test.setLayoutManager(ln);
 
-//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score");
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(RankNumber);
+        Query query1 = FirebaseDatabase.getInstance().getReference("test").orderByChild("score").limitToFirst(1);
+        query1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.d(TAG, "onDataChange: calvin " + snapshot.getRef().orderByChild("score").toString());
+                Log.d(TAG, "onDataChange: calvin value " + snapshot.getValue());
+                snapshot.getRef().removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(RankNumber);
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
         adapter = new FirebaseRecyclerAdapter<leaderboard, testHolder>(options) {
@@ -208,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
                 holder.date.setText(model.getDate());
                 holder.score.setText(model.getScore());
 //                holder.rank.setText(model.getRank());
-                holder.rank.setText(Integer.toString(RankNumber - position));
+//                holder.rank.setText(Integer.toString(RankNumber - position));
+                holder.rank.setText(Integer.toString(position % RankNumber));
             }
 
             @NonNull
@@ -261,12 +284,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void record_bet(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "record_bet: ");
         score.record_bet();
         refresh_score();
     }
 
     public void clear_bet(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "clean_bet: ");
 
         score.add_back();
@@ -274,6 +303,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet1(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "add_bet1: ");
         refresh_score();
 
@@ -287,6 +319,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet1(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "minus_bet1: ");
         refresh_score();
         if (score.getBet() < 1)
@@ -297,6 +332,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet5(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "add_bet5: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -312,6 +350,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet5(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "minus_bet5: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -325,6 +366,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet10(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "add_bet10: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -340,6 +384,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet10(View view) {
+        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+            return;
+        }
         Log.d(TAG, "minus_bet10: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -364,11 +411,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "option_board: close");
             Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
             if (optionBoardFragment != null) {
-                option_board.beginTransaction().remove(optionBoardFragment).commit();
+                option_board.beginTransaction().remove(optionBoardFragment).commitAllowingStateLoss();
             }
         } else {
             Log.d(TAG, "option_board: open");
-            option_board.beginTransaction().add(R.id.board, OptionFragment.getInstance(), "option").commit();
+            option_board.beginTransaction().add(R.id.board, OptionFragment.getInstance(), "option").commitNowAllowingStateLoss();
         }
     }
 
