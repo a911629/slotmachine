@@ -13,29 +13,34 @@ public class Score {
         switch (cur) {
             case 0:
             case 1:
-            case 6:
-                setCurrent(current + bet * 3);
+            case 2:
+                setCurrent(getCurrent() + getBet() * 3);
+                Log.d(TAG, "bingo1: " + getCurrent() + getBet());
 //                current += bet * 3;
                 break;
-            case 2:
             case 3:
-                setCurrent(current + bet * 5);
+            case 4:
+                setCurrent(getCurrent() + getBet() * 5);
+                Log.d(TAG, "bingo2: " + getCurrent() + getBet());
 //                current += bet * 5;
                 break;
-            case 4:
-                setCurrent(current + bet * 9);
+            case 5:
+                setCurrent(getCurrent() + getBet() * 9);
+                Log.d(TAG, "bingo3: " + getCurrent() + getBet());
 //                current += bet * 9;
                 break;
-            case 5:
-                setCurrent(current + bet * 17);
+            case 6:
+                setCurrent(getCurrent() + getBet() * 17);
+                Log.d(TAG, "bingo4: " + getCurrent() + getBet());
 //                current += bet * 17;
                 break;
             default:
 //                bet = 0;
-                setBet(0);
+//                setBet(0);
                 break;
         }
         setRecord(getBet());
+        clean_bet();
 //        record = bet;
 //        set_score();
     }
@@ -97,6 +102,7 @@ public class Score {
     }
 
     public void setRecord(int record) {
+        Log.d(TAG, "setRecord: " + record);
         this.record = record;
     }
 

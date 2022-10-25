@@ -7,23 +7,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+
+    <!--    <LinearLayout-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:background="#ffffff"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:visibility="visible">-->
+
+    <com.example.slotgame.SlotMachine
+        android:id="@+id/Slotmachine"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
-        app:srcCompat="@drawable/slot" />
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:onClick="bar"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/minus_bet10"
+        app:layout_constraintTop_toTopOf="@+id/add_bet10"
         app:srcCompat="@drawable/bar"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -86,7 +99,7 @@
         android:layout_marginTop="16dp"
         android:onClick="add_bet1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/Slotmachine"
         app:srcCompat="@drawable/bet1_add" />
 
     <TextView
@@ -105,6 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:background="#F4DCE4"
         android:onClick="record_bet"
         android:text="Use record bet"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +128,8 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="4dp"
+        android:background="#F4DCE4"
         android:onClick="clear_bet"
         android:text="Clear bet"
         app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -124,21 +139,12 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
         android:onClick="option_board"
         android:stateListAnimator="@null"
         android:text="Option"
-        app:layout_constraintStart_toEndOf="@+id/add_bet10"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/add_bet10" />
-
-    <TextView
-        android:id="@+id/version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button" />
 
     <TextView
         android:id="@+id/score"
@@ -165,35 +171,35 @@
         app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toTopOf="@+id/textView9" />
 
-    <ImageView
-        android:id="@+id/slot1"
-        android:layout_width="75dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:srcCompat="@drawable/class7" />
+    <!--    <ImageView-->
+    <!--        android:id="@+id/slot1"-->
+    <!--        android:layout_width="75dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:srcCompat="@drawable/class7"-->
+    <!--        tools:layout_editor_absoluteX="25dp"-->
+    <!--        tools:layout_editor_absoluteY="48dp" />-->
 
-    <ImageView
-        android:id="@+id/slot2"
-        android:layout_width="75dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:srcCompat="@drawable/class7" />
+    <!--    <ImageView-->
+    <!--        android:id="@+id/slot2"-->
+    <!--        android:layout_width="75dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/slot1"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/slot1"-->
+    <!--        app:srcCompat="@drawable/class7" />-->
 
-    <ImageView
-        android:id="@+id/slot3"
-        android:layout_width="75dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="210dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:srcCompat="@drawable/class7" />
+    <!--    <ImageView-->
+    <!--        android:id="@+id/slot3"-->
+    <!--        android:layout_width="75dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/slot2"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/slot2"-->
+    <!--        app:srcCompat="@drawable/class7" />-->
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/board"
@@ -203,7 +209,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -215,7 +220,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/textView"
@@ -230,7 +236,6 @@
             android:id="@+id/test"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -281,7 +286,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.3" />
+            app:layout_constraintGuide_percent="0.29927006" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline6"
@@ -326,5 +331,14 @@
             app:srcCompat="@drawable/close" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
