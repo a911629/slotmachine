@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:theme="@style/Theme.SlotGame.AppBarOverlay">-->
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            android:background="@color/teal_200"-->
+<!--            app:popupTheme="@style/Theme.SlotGame.PopupOverlay" />-->
+
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <!--    <LinearLayout-->
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
@@ -17,17 +30,18 @@
     <!--        android:padding="5dp"-->
     <!--        android:visibility="visible">-->
 
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
     <com.example.slotgame.SlotMachine
         android:id="@+id/Slotmachine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <ImageView
         android:id="@+id/imageView6"
@@ -80,6 +94,15 @@
         app:layout_constraintStart_toEndOf="@+id/minus_bet01"
         app:layout_constraintTop_toTopOf="@+id/minus_bet01"
         app:srcCompat="@drawable/bet5_minus" />
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <ImageView
         android:id="@+id/add_bet10"
@@ -143,6 +166,7 @@
         android:onClick="option_board"
         android:stateListAnimator="@null"
         android:text="Option"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/add_bet10" />
 
@@ -331,14 +355,5 @@
             app:srcCompat="@drawable/close" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

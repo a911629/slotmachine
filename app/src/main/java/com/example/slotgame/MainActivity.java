@@ -3,6 +3,7 @@ package com.example.slotgame;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,10 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import android.app.AlertDialog;
 //import android.content.DialogInterface;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,7 +44,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String VERSION = "Version 0.0.2";
+    private String VERSION = "Version 0.0.3";
     private static final String TAG = MainActivity.class.getSimpleName();
     private Score score = new Score();
     private TextView score_t;
@@ -48,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager option_board;
     private FragmentManager leader_board;
     private FragmentManager list_board;
+    private DialogFragment tttt = new ListDialog();
     private boolean isStarted = false;
     private Wheel wheel1, wheel2, wheel3;
 //    private ImageView slot1, slot2, slot3;
@@ -108,6 +114,42 @@ public class MainActivity extends AppCompatActivity {
         option_board = getSupportFragmentManager();
         leader_board = getSupportFragmentManager();
         list_board = getSupportFragmentManager();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.new_game:
+                new_game();
+                break;
+            case R.id.show_leader_board:
+                leader_board();
+                break;
+            case R.id.show_list:
+                list_board();
+                break;
+            case R.id.quit:
+                finish();
+                break;
+        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void bar(View view) {
@@ -274,18 +316,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void record_bet(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "record_bet: ");
         score.record_bet();
         refresh_score();
     }
 
     public void clear_bet(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "clean_bet: ");
 
         score.add_back();
@@ -293,9 +335,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet1(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "add_bet1: ");
         refresh_score();
 
@@ -309,9 +351,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet1(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "minus_bet1: ");
         refresh_score();
         if (score.getBet() < 1)
@@ -322,9 +364,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet5(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "add_bet5: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -340,9 +382,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet5(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "minus_bet5: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -356,9 +398,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet10(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "add_bet10: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -374,9 +416,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet10(View view) {
-        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-            return;
-        }
+//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
+//            return;
+//        }
         Log.d(TAG, "minus_bet10: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -389,14 +431,13 @@ public class MainActivity extends AppCompatActivity {
         refresh_score();
     }
 
-    public void new_game(View view) {
+    public void new_game() {
         Log.d(TAG, "reset_game: ");
         score.init_score();
         refresh_score();
-        option_board(view);
     }
 
-    public void option_board(View view) {
+    public void option_board() {
         if (OptionFragment.getInstance().isVisible()) {
             Log.d(TAG, "option_board: close");
             Fragment optionBoardFragment = getSupportFragmentManager().findFragmentByTag("option");
@@ -409,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void leader_board(View view) {
+    public void leader_board() {
         if (lead.getVisibility() == View.GONE) {
             Log.d(TAG, "leader_board: lead open");
             lead.setVisibility(View.VISIBLE);
@@ -426,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void list_board(View view) {
+    public void list_board() {
         if (lead.getVisibility() == View.VISIBLE)
             lead.setVisibility(View.GONE);
         if (ListFragment.getInstance().isVisible()) {
@@ -444,8 +485,10 @@ public class MainActivity extends AppCompatActivity {
                     option_board.beginTransaction().remove(optionBoardFragment).commit();
                 }
             }
-            list_board.beginTransaction().add(R.id.board, ListFragment.getInstance(), "list").commit();
+//            list_board.beginTransaction().add(R.id.board, ListFragment.getInstance(), "list").commit();
+            tttt.show(list_board, "list");
         }
+
     }
 
 //    public void GetLeaderBoard(View view) {
@@ -707,7 +750,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        for (int i = 3; i >= 1; i--) {
         for (int j = 0; j < 4; j++) {
 //                Log.d(TAG, "sort: i:j " + i +":"+ j);
             Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] + ":" + total_score[j + 1]);
@@ -719,15 +761,6 @@ public class MainActivity extends AppCompatActivity {
 
         return 0;
     }
-
-//    public boolean bigger(int a, int b) {
-//        DatabaseReference leader[] = new DatabaseReference[5];
-//        for (int i = 1; i <= 5; i++) {
-//            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
-//                    .getReference("leaderboard")
-//                    .child(Integer.toString(i));
-//        }
-//    }
 
     public void quit(View view) {
         Log.d(TAG, "quit: go");
