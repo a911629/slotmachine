@@ -8,30 +8,30 @@ public class Score {
     private int bet;
     private int record;
 
-    public void bingo(int cur) {
+    public int bingo(int cur) {
 //        load_score();
         switch (cur) {
             case 0:
             case 1:
             case 2:
                 setCurrent(getCurrent() + getBet() * 3);
-                Log.d(TAG, "bingo1: " + getCurrent() + getBet());
+                Log.d(TAG, "bingo1: " + getCurrent() + " " + getBet());
 //                current += bet * 3;
                 break;
             case 3:
             case 4:
                 setCurrent(getCurrent() + getBet() * 5);
-                Log.d(TAG, "bingo2: " + getCurrent() + getBet());
+                Log.d(TAG, "bingo2: " + getCurrent() + " " + getBet());
 //                current += bet * 5;
                 break;
             case 5:
                 setCurrent(getCurrent() + getBet() * 9);
-                Log.d(TAG, "bingo3: " + getCurrent() + getBet());
+                Log.d(TAG, "bingo3: " + getCurrent() + " " + getBet());
 //                current += bet * 9;
                 break;
             case 6:
                 setCurrent(getCurrent() + getBet() * 17);
-                Log.d(TAG, "bingo4: " + getCurrent() + getBet());
+                Log.d(TAG, "bingo4: " + getCurrent() + " " + getBet());
 //                current += bet * 17;
                 break;
             default:
@@ -41,6 +41,7 @@ public class Score {
         }
         setRecord(getBet());
         clean_bet();
+        return getCurrent();
 //        record = bet;
 //        set_score();
     }
@@ -79,6 +80,10 @@ public class Score {
     public void add_back() {
         current += bet;
         bet = 0;
+    }
+
+    public int total() {
+        return current + bet;
     }
 
     public int getCurrent() {

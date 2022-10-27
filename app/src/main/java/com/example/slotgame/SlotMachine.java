@@ -89,7 +89,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
         mSelectedArray = new int[3];
 
         // 圖示顯示大小
-        int size = dip2px(100);
+        int size = dip2px(70);
 
         mSlot01.setDrawModeSpecifiedSize(size, size);
         mSlot02.setDrawModeSpecifiedSize(size, size);

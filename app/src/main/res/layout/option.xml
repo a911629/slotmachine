@@ -13,10 +13,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:onClick="new_game"
         android:stateListAnimator="@null"
         android:text="New Game"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +26,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:onClick="leader_board"
         android:text="Leader Board"
         app:layout_constraintEnd_toEndOf="@+id/new_game"
         app:layout_constraintStart_toStartOf="@+id/new_game"
@@ -39,7 +36,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:onClick="list_board"
         android:text="List"
         app:layout_constraintEnd_toEndOf="@+id/leader_o"
         app:layout_constraintStart_toStartOf="@+id/leader_o"
@@ -51,20 +47,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:onClick="quit"
         android:text="Quit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button3"
         app:layout_constraintStart_toStartOf="@+id/button3"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
-
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="4dp"
-        android:onClick="option_board"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/close" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

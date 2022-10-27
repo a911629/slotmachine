@@ -4,7 +4,7 @@ public class leaderboard {
     String name;
     int score;
     String date;
-    int rank;
+//    int rank;
 
     public leaderboard() {
     }
@@ -15,12 +15,12 @@ public class leaderboard {
         this.date = date;
     }
 
-    public leaderboard(String name, int score, String date, int rank) {
-        this.name = name;
-        this.score = score;
-        this.date = date;
-        this.rank = rank;
-    }
+//    public leaderboard(String name, int score, String date, int rank) {
+//        this.name = name;
+//        this.score = score;
+//        this.date = date;
+//        this.rank = rank;
+//    }
 
     public String getName() {
         return name;
@@ -30,8 +30,8 @@ public class leaderboard {
         this.name = name;
     }
 
-    public String getScore() {
-        return Integer.toString(score);
+    public int getScore() {
+        return score;
     }
 
     public void setScore(int score) {
@@ -46,11 +46,11 @@ public class leaderboard {
         this.date = date;
     }
 
-    public String  getRank() {
-        return Integer.toString(rank);
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
+//    public String  getRank() {
+//        return Integer.toString(rank);
+//    }
+//
+//    public void setRank(int rank) {
+//        this.rank = rank;
+//    }
 }
