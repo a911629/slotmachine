@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 //import android.widget.LinearLayout;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String VERSION = "Version 0.0.4";
+    private String VERSION = "Version 0.0.5";
     private static final String TAG = MainActivity.class.getSimpleName();
     private Score score = new Score();
     private TextView score_t;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager leader_board;
     private FragmentManager list_board;
     private DialogFragment df_list = new ListDialog();
+//    private DialogFragment df_lead = new LeadDialog();
     private boolean isStarted = false;
     private Wheel wheel1, wheel2, wheel3;
     //    private ImageView slot1, slot2, slot3;
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         option_board = getSupportFragmentManager();
         leader_board = getSupportFragmentManager();
         list_board = getSupportFragmentManager();
+
+        large_score = score.total();
     }
 
     @Override
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
             mIsPlaying = true;
             // 開始滾動
-            if (mRandom.nextInt(2) == 0) { // 中獎
+            if (mRandom.nextInt(4) == 0) { // 中獎調整
                 mSlotMachine.play(mRandom.nextInt(bitmaps.size()));
             } else { //
                 mSlotMachine.play(-1);
@@ -213,16 +217,27 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish(int pos01, int pos02, int pos03) {
                 mIsPlaying = false;
 //                Toast.makeText(getApplicationContext(), pos01 + "," + pos02 + "," + pos03, Toast.LENGTH_SHORT).show();
-                score.setRecord(score.getBet());
                 if (pos01 == pos02 && pos02 == pos03) {
-                    Log.d(TAG, "onFinish: bingo " + pos01);
+                    Log.d(TAG, "onFinish: bingo pos: " + pos01 + " cur: " + score.getCurrent());
                     int temp = score.bingo(pos01);
-                    if (temp > large_score)
+                    if (temp > large_score) {
                         large_score = temp;
-                    Log.d(TAG, "onFinish: large " + large_score);
+                    }
                     Log.d(TAG, "onFinish: large " + large_score);
                 }
                 score.clean_bet();
+                // 此處轉動結束
+                Log.d(TAG, "onFinish: 轉動結束");
+                if(score.getCurrent() == 0 && score.getBet() == 0)
+                    new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Game over")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                leader_board();
+                                SaveLeaderBoard();
+                            }
+                        }).show();
                 refresh_score();
             }
 
@@ -242,13 +257,17 @@ public class MainActivity extends AppCompatActivity {
 
         lead = findViewById(R.id.lead_board);
 
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+        lm.setReverseLayout(true);
+
+        // 原先leadboard在fragment形式
+//        lead_show = findViewById(R.id.lead);
+//        lead_show.setHasFixedSize(true);
+//        lead_show.setLayoutManager(lm);
+
         // 10.14 測試開始 成功
         test = findViewById(R.id.test);
         test.setHasFixedSize(true);
-
-        // 將用來顯示的 layout 反向
-        LinearLayoutManager lm = new LinearLayoutManager(this);
-        lm.setReverseLayout(true);
         test.setLayoutManager(lm);
 
         // 取得資料庫leaderboard下資料筆數
@@ -268,37 +287,6 @@ public class MainActivity extends AppCompatActivity {
 //        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast((int) count);
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(5);
 
-
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                count = snapshot.getChildrenCount();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-        //寫入資料
-//        FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Log.d(TAG, "calvin " + snapshot.getValue());
-//                leaderboard leaderboard = new leaderboard("ttt", 150, "20220101");
-//                DatabaseReference tempRef = snapshot.getRef().push();
-//                tempRef.setValue(leaderboard);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-
-//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(RankNumber);
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
                 .setQuery(query, leaderboard.class).build();
         adapter = new FirebaseRecyclerAdapter<leaderboard, testHolder>(options) {
@@ -324,6 +312,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         test.setAdapter(adapter);
+//        10.14 測試結束
+//        lead_show.setAdapter(adapter);
     }
 
     class testHolder extends RecyclerView.ViewHolder {
@@ -478,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
     public void new_game() {
         Log.d(TAG, "reset_game: ");
         score.init_score();
+        large_score = 100;
         refresh_score();
     }
 
@@ -509,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
                 option_board.beginTransaction().remove(optionBoardFragment).commit();
             }
         }
+//        df_lead.show(leader_board, "lead");
     }
 
     public void list_board() {
@@ -621,6 +613,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SaveLeaderBoard(View view) {
+        DatabaseReference leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard").push();
+        Date date = new Date(System.currentTimeMillis());
+        leaderboard leaderboard = new leaderboard();
+        final EditText titleEdit = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setTitle("Enter name")
+                .setView(titleEdit)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String name = titleEdit.getText().toString();
+                        leaderboard add = new leaderboard(name, large_score, new SimpleDateFormat("yyyy-MM-dd").format(date));
+//                        add.setName(name);
+//                        add.setScore(score.total());
+//                        add.setDate("20221111");
+                        leaderboardRef.setValue(add);
+                    }
+                }).setNeutralButton("Cancel", null)
+                .show();
+    }
+
+    public void SaveLeaderBoard() {
         DatabaseReference leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard").push();
         Date date = new Date(System.currentTimeMillis());
         leaderboard leaderboard = new leaderboard();
