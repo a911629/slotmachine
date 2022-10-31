@@ -14,25 +14,25 @@ public class Score {
             case 0:
             case 1:
             case 2:
+                Log.d(TAG, "bingo1: ori: " + getCurrent() + " add: " + getBet() * 3);
                 setCurrent(getCurrent() + getBet() * 3);
-                Log.d(TAG, "bingo1: " + getCurrent() + " " + getBet());
-//                current += bet * 3;
+                Log.d(TAG, "bingo now:" + getCurrent());
                 break;
             case 3:
             case 4:
+                Log.d(TAG, "bingo2: ori: " + getCurrent() + " add: " + getBet() * 5);
                 setCurrent(getCurrent() + getBet() * 5);
-                Log.d(TAG, "bingo2: " + getCurrent() + " " + getBet());
-//                current += bet * 5;
+                Log.d(TAG, "bingo now: " + getCurrent());
                 break;
             case 5:
+                Log.d(TAG, "bingo3: ori: " + getCurrent() + " add: " + getBet() * 9);
                 setCurrent(getCurrent() + getBet() * 9);
-                Log.d(TAG, "bingo3: " + getCurrent() + " " + getBet());
-//                current += bet * 9;
+                Log.d(TAG, "bingo now:" + getCurrent());
                 break;
             case 6:
+                Log.d(TAG, "bingo4: ori: " + getCurrent() + " add: " + getBet() * 17);
                 setCurrent(getCurrent() + getBet() * 17);
-                Log.d(TAG, "bingo4: " + getCurrent() + " " + getBet());
-//                current += bet * 17;
+                Log.d(TAG, "bingo now:" + getCurrent());
                 break;
             default:
 //                bet = 0;

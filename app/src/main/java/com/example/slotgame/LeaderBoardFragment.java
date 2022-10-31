@@ -1,5 +1,6 @@
 package com.example.slotgame;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
     private static final String TAG = LeaderBoardFragment.class.getSimpleName();
     private List<leaderboard> leads = new ArrayList<leaderboard>();
     private View view;
+    private Context c;
+    private LinearLayoutManager llm;
     private static LeaderBoardFragment instance;
     public RecyclerView recycler;
     JSONObject jsonObject;
@@ -60,14 +63,65 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 // TODO: leaderboard read database
-        view = inflater.inflate(R.layout.leader_board, container, false);
+
+//        view = inflater.inflate(R.layout.leader_board, container, false);
+//        c = getContext();
+//        recycler = (RecyclerView) view.findViewById(R.id.lead);
+//        llm = new LinearLayoutManager(c);
+//        recycler.setHasFixedSize(true);
 //
 //        leaderRef = FirebaseDatabase.getInstance().getReference().child("leaderboard");
+//        adapter = new FirebaseRecyclerAdapter<leaderboard, leaderboardHolder>(
+//                leaderboard.class, R.layout.leader_info, leaderboardHolder.class, recycler
+//        ) {
+//            @NonNull
+//            @Override
+//            public leaderboardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onBindViewHolder(@NonNull leaderboardHolder holder, int position, @NonNull leaderboard model) {
+//
+//            }
+//
+//            @Override
+//            protected void populateViewHolder(leaderboardHolder viewHolder, leaderboard model, int position) {
+//                viewHolder.setName(model.getName());
+//                viewHolder.setScore(model.getScore());
+//                viewHolder.setDate(model.getDate());
+//            }
+//        };
+//
+//        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onChanged() {
+//                super.onChanged();
+//            }
+//
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                super.onItemRangeInserted(positionStart, itemCount);
+//                int friendlyMessageCount = adapter.getItemCount();
+//                int lastVisiblePosition = llm.findLastCompletelyVisibleItemPosition();
+//                if (lastVisiblePosition == -1 ||
+//                        (positionStart >= (friendlyMessageCount - 1) &&
+//                                lastVisiblePosition == (positionStart - 1))) {
+//                    recycler.scrollToPosition(positionStart);
+//                }
+//
+//            }
+//        });
+//
+//        recycler.setLayoutManager(llm);
+//        recycler.setAdapter(adapter);
+
+
 //        Log.d(TAG, "onCreateView: " + leaderRef.getDatabase());
 //        FirebaseDatabase database = leaderRef.getDatabase();
 //        database.
-
-        init(view);
+//
+//        init(view);
         return view;
     }
 
@@ -96,10 +150,10 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
 
     private void init(View view) {
 //        Log.d(TAG, "init: ");
-        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
-        recycler = view.findViewById(R.id.lead);
+//        leaderRef = FirebaseDatabase.getInstance().getReference("leaderboard");
+//        recycler = view.findViewById(R.id.lead);
 //        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+//        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         //10/14
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByValue();
@@ -121,6 +175,7 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
             }
         };
         recycler.setAdapter(adapter);
+
 
 
 //        Log.d(TAG, "init1: " + leaderRef.addValueEventListener(new ValueEventListener() {
@@ -203,6 +258,32 @@ public class LeaderBoardFragment extends Fragment implements ValueEventListener 
         TextView name;
         TextView score;
         TextView date;
+
+        public TextView getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name.setText(name);
+        }
+
+        public TextView getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+//            this.score = score;
+            this.score.setText(score);
+        }
+
+        public TextView getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+//            this.date = date;
+            this.date.setText(date);
+        }
 
         public leaderboardHolder(@NonNull View itemView) {
             super(itemView);

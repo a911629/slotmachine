@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -12,6 +13,7 @@ import com.example.slotgame.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,6 +32,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
     private static int DURATION01 = 3000;
     private static int DURATION02 = 3500;
     private static int DURATION03 = 4000;
+    private String TAG = SlotMachine.class.getSimpleName();
 
     /**
      * 重置滚动的时间
@@ -170,7 +173,6 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
         }
     }
 
-
     /**
      * 开始滚动，
      *
@@ -186,7 +188,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
         int slot01, slot02, slot03;
         int duration01, duration02, duration03;
 
-//        Collections.shuffle(mDurationList);
+        Collections.shuffle(mDurationList);
         duration01 = mDurationList.get(0);
         duration02 = mDurationList.get(1);
         duration03 = mDurationList.get(2);

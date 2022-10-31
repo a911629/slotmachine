@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager leader_board;
     private FragmentManager list_board;
     private DialogFragment df_list = new ListDialog();
-//    private DialogFragment df_lead = new LeadDialog();
+    //    private DialogFragment df_lead = new LeadDialog();
     private boolean isStarted = false;
     private Wheel wheel1, wheel2, wheel3;
     //    private ImageView slot1, slot2, slot3;
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView test;
     private ConstraintLayout lead;
     private int RankNumber = 5;
+    Bundle bundle = new Bundle();
 
     private SlotMachine mSlotMachine;
     private boolean mIsPlaying = false;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private int large_score = 0;
     private long count = 5;
     private boolean RewriteLeader = false;
+    private AlertDialog.Builder temp;
 
 //    private ValueEventListener leaderListener = new ValueEventListener() {
 //        @Override
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.new_game:
-                new_game();
+                new_game(true);
                 break;
             case R.id.show_leader_board:
                 leader_board();
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 list_board();
                 break;
             case R.id.quit:
-                finish();
+                quit(true);
                 break;
         }
 //        if (id == R.id.action_settings) {
@@ -168,8 +170,9 @@ public class MainActivity extends AppCompatActivity {
 //        }
         if (score.getBet() == 0)
             return;
+
         Log.d(TAG, "bar: ");
-//        score.setRecord(7);
+        score.setRecord(score.getBet());
         Random mRandom = new Random();
 
         if (score.getBet() + score.getCurrent() > large_score) {
@@ -184,9 +187,32 @@ public class MainActivity extends AppCompatActivity {
             }
             mIsPlaying = true;
             // 開始滾動
-            if (mRandom.nextInt(4) == 0) { // 中獎調整
-                mSlotMachine.play(mRandom.nextInt(bitmaps.size()));
+
+            if (mRandom.nextInt(3) == 0) { // 中獎機率調整
+                Log.d(TAG, "bar: 會中獎");
+
+                int rand = mRandom.nextInt(100);
+
+                if (rand < chance.sum(0))
+                    mSlotMachine.play(1);
+                else if (rand < chance.sum(1))
+                    mSlotMachine.play(2);
+                else if (rand < chance.sum(2))
+                    mSlotMachine.play(3);
+                else if (rand < chance.sum(3))
+                    mSlotMachine.play(4);
+                else if (rand < chance.sum(4))
+                    mSlotMachine.play(5);
+                else if (rand < chance.sum(5))
+                    mSlotMachine.play(6);
+                else if (rand < chance.sum(6))
+                    mSlotMachine.play(7);
+
+//                mSlotMachine.play(mRandom.nextInt(bitmaps.size()));
+                chance.init();
             } else { //
+                Log.d(TAG, "bar: 不會中獎");
+                chance.add_chance();
                 mSlotMachine.play(-1);
             }
         }
@@ -228,16 +254,16 @@ public class MainActivity extends AppCompatActivity {
                 score.clean_bet();
                 // 此處轉動結束
                 Log.d(TAG, "onFinish: 轉動結束");
-                if(score.getCurrent() == 0 && score.getBet() == 0)
+                if (score.getCurrent() == 0 && score.getBet() == 0) {
                     new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Game over")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                leader_board();
-                                SaveLeaderBoard();
-                            }
-                        }).show();
+                            .setTitle("Game over")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new_game(true);
+                                }
+                            }).show();
+                }
                 refresh_score();
             }
 
@@ -311,7 +337,8 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         };
-        test.setAdapter(adapter);
+//        bundle.put("adapter", adapter);
+//        test.setAdapter(adapter);
 //        10.14 測試結束
 //        lead_show.setAdapter(adapter);
     }
@@ -465,8 +492,24 @@ public class MainActivity extends AppCompatActivity {
         refresh_score();
     }
 
-    public void new_game() {
+    public void new_game(boolean save) {
         Log.d(TAG, "reset_game: ");
+        if (save == true)
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("New Game")
+                    .setMessage("Do you want to save score to leaderboard ?")
+                    .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SaveLeaderBoard();
+                        }
+                    })
+                    .setPositiveButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }).show();
+        refresh_score();
         score.init_score();
         large_score = 100;
         refresh_score();
@@ -620,7 +663,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Enter name")
                 .setView(titleEdit)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String name = titleEdit.getText().toString();
@@ -630,7 +673,7 @@ public class MainActivity extends AppCompatActivity {
 //                        add.setDate("20221111");
                         leaderboardRef.setValue(add);
                     }
-                }).setNeutralButton("Cancel", null)
+                }).setPositiveButton("Cancel", null)
                 .show();
     }
 
@@ -642,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Enter name")
                 .setView(titleEdit)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String name = titleEdit.getText().toString();
@@ -652,7 +695,7 @@ public class MainActivity extends AppCompatActivity {
 //                        add.setDate("20221111");
                         leaderboardRef.setValue(add);
                     }
-                }).setNeutralButton("Cancel", null)
+                }).setPositiveButton("Cancel", null)
                 .show();
     }
 
@@ -728,109 +771,164 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public int sort(View view) {
-
-        Log.d(TAG, "sort: go here");
-
-//        Arrays.sort(total_score);
-
-//        long[] b = new long[total_score.length];
-//        int j = total_score.length;
-//        for (int i = 0; i < total_score.length; i++) {
-//            b[j - 1] = total_score[i];
-//            j -= 1;
+//    public int sort(View view) {
+//
+//        Log.d(TAG, "sort: go here");
+//
+////        Arrays.sort(total_score);
+//
+////        long[] b = new long[total_score.length];
+////        int j = total_score.length;
+////        for (int i = 0; i < total_score.length; i++) {
+////            b[j - 1] = total_score[i];
+////            j -= 1;
+////        }
+//
+//        // printing the reversed array
+////        System.out.println("Reversed array is: \n");
+////        for (int k = 0; k < total_score.length; k++) {
+////            Log.d(TAG, "sort: " + b[k]);
+////        }
+//
+//        DatabaseReference LeaderRef[] = new DatabaseReference[5];
+////        long[] s = new long[5];
+//        for (int i = 1; i <= 5; i++) {
+//            LeaderRef[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
+//                    .getReference("leaderboard")
+//                    .child(Integer.toString(i));
 //        }
-
-        // printing the reversed array
-//        System.out.println("Reversed array is: \n");
-//        for (int k = 0; k < total_score.length; k++) {
-//            Log.d(TAG, "sort: " + b[k]);
+//
+//        LeaderRef[0].addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+//                Log.d(TAG, "onDataChange: 0 | " + total_score[0]);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//        LeaderRef[1].addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+//                Log.d(TAG, "onDataChange: 1 | " + total_score[1]);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        LeaderRef[2].addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+//                Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        LeaderRef[3].addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+//                Log.d(TAG, "onDataChange: 3 | " + total_score[3]);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        LeaderRef[4].addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
+//                Log.d(TAG, "onDataChange: 4 | " + total_score[4]);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//        for (int j = 0; j < 4; j++) {
+////                Log.d(TAG, "sort: i:j " + i +":"+ j);
+//            Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] + ":" + total_score[j + 1]);
+//            if (total_score[j] < total_score[j + 1]) {
+//                SwapLeaderBoard(j, j + 1);
+//            }
 //        }
+////        }
+//
+//        return 0;
+//    }
 
-        DatabaseReference LeaderRef[] = new DatabaseReference[5];
-//        long[] s = new long[5];
-        for (int i = 1; i <= 5; i++) {
-            LeaderRef[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
-                    .getReference("leaderboard")
-                    .child(Integer.toString(i));
+    public void quit(boolean t) {
+        final boolean[] q = {false};
+        Log.d(TAG, "quit: go");
+
+        temp = new AlertDialog.Builder(MainActivity.this);
+        temp.setTitle("Quit Game");
+        temp.setMessage("Do you want to save score to leaderboard ?");
+        temp.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SaveLeaderBoard();
+//                System.exit(0);
+                q[0] = true;
+            }
+        });
+        temp.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                q[0] = true;
+            }
+        });
+        temp.create().show();
+
+
+//        AlertDialog temp = new AlertDialog.Builder(MainActivity.this)
+//                .setTitle("Quit Game")
+//                .setMessage("Do you want to save score to leaderboard ?")
+//                .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        SaveLeaderBoard();
+//                    }
+//                })
+//                .setPositiveButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                }).show();
+//        temp.show();
+        Log.d(TAG, "quit: 有欸 " + q[0]);
+        if (q[0] == true) {
+            Log.d(TAG, "quit: really quit");
+//            finish();
         }
-
-        LeaderRef[0].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-                Log.d(TAG, "onDataChange: 0 | " + total_score[0]);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        LeaderRef[1].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-                Log.d(TAG, "onDataChange: 1 | " + total_score[1]);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        LeaderRef[2].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-                Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        LeaderRef[3].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-                Log.d(TAG, "onDataChange: 3 | " + total_score[3]);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        LeaderRef[4].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-                Log.d(TAG, "onDataChange: 4 | " + total_score[4]);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        for (int j = 0; j < 4; j++) {
-//                Log.d(TAG, "sort: i:j " + i +":"+ j);
-            Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] + ":" + total_score[j + 1]);
-            if (total_score[j] < total_score[j + 1]) {
-                SwapLeaderBoard(j, j + 1);
-            }
-        }
-//        }
-
-        return 0;
     }
 
-    public void quit(View view) {
-        Log.d(TAG, "quit: go");
-        finish();
+    @Override
+    protected void onDestroy() {
+        if (temp != null) {
+            temp.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+
+                }
+            });
+        }
+
+        super.onDestroy();
     }
 }
