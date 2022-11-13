@@ -22,7 +22,7 @@ public class ReflectUtil {
         if (field == null) {
             return null;
         }
-        // 参数值为true，禁用访问控制检查
+        // set access to true
         field.setAccessible(true);
         try {
             return field.get(instance);
@@ -36,7 +36,7 @@ public class ReflectUtil {
         if (field == null) {
             return null;
         }
-        // 参数值为true，禁用访问控制检查
+        // set access to true
         field.setAccessible(true);
         try {
             return field.get(null);
