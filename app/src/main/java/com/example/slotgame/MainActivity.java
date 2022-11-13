@@ -292,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
             date = itemView.findViewById(R.id.leader_date);
         }
     }
-    // 10.14 測試結束
 
     @Override
     protected void onStart() {
@@ -454,7 +453,6 @@ public class MainActivity extends AppCompatActivity {
                 option_board.beginTransaction().remove(optionBoardFragment).commit();
             }
         }
-//        df_lead.show(leader_board, "lead");
     }
 
     public void list_board() {
@@ -469,7 +467,6 @@ public class MainActivity extends AppCompatActivity {
                     option_board.beginTransaction().remove(optionBoardFragment).commit();
                 }
             }
-//            list_board.beginTransaction().add(R.id.board, ListFragment.getInstance(), "list").commit();
             df_list.show(list_board, "list");
         }
 
