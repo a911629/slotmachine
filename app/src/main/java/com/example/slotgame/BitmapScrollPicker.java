@@ -24,7 +24,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
     private Rect mRectTemp;
     private int mDrawMode = DRAW_MODE_CENTER;
 
-    // item内容缩放倍数
+    // item的內容縮放的倍數
     private float mMinScale = 1;
     private float mMaxScale = 1;
 
@@ -79,7 +79,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
                 mSpecifiedSizeHeight = mMeasureHeight;
             }
             setDrawModeSpecifiedSize(mSpecifiedSizeWidth, mSpecifiedSizeHeight);
-        } else { // 居中
+        } else { // 置中
             int size;
             if (isHorizontal()) {
                 size = Math.min(mMeasureHeight, getItemWidth());
@@ -133,7 +133,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
             mRectTemp.set(mSpecifiedSizeRect);
             scale(mRectTemp, relative, itemSize, moveLength);
             canvas.drawBitmap(bitmap, mRect1, mRectTemp, null);
-        } else { // 居中
+        } else { // 置中
             if (isHorizontal()) {
                 float scale = mRect2.height() * 1f / bitmap.getHeight();
                 span = (int) ((itemSize - bitmap.getWidth() * scale) / 2);
@@ -155,7 +155,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
         }
     }
 
-    // 缩放item内容
+    // 縮放item内容
     private void scale(Rect rect, int relative, int itemSize, float moveLength) {
         if (mMinScale == 1 && mMaxScale == 1) {
             return;
