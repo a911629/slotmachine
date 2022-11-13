@@ -9,9 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-//import android.app.AlertDialog;
-//import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -22,10 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.widget.LinearLayout;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
@@ -37,8 +32,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.ValueEventListener;
 
-//import java.util.Arrays;
-//import java.util.Collections;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -56,21 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager leader_board;
     private FragmentManager list_board;
     private DialogFragment df_list = new ListDialog();
-    //    private DialogFragment df_lead = new LeadDialog();
     private boolean isStarted = false;
-    private Wheel wheel1, wheel2, wheel3;
-    //    private ImageView slot1, slot2, slot3;
     private Chance chance = new Chance();
     private long[] total_score = new long[5];
 
-    //recyclerview test
     private Query query;
     private DatabaseReference leaderRef;
-    //    private FirebaseRecyclerAdapter<leaderboard, leaderboard> adapter;
     public RecyclerView recycler;
-//    List<leaderboard> mList = new ArrayList<leaderboard>();
-    //    private RecyclerView recyclerView;
-//    private FirebaseRecyclerAdapter<leaderboard, leaderboardHolder> adapter;
 
     public static final Random RANDOM = new Random();
     private int l_time = 0;
@@ -89,23 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean RewriteLeader = false;
     private AlertDialog.Builder temp;
 
-//    private ValueEventListener leaderListener = new ValueEventListener() {
-//        @Override
-//        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//            if (snapshot.getValue() == null)
-//                return;
-//            long score = (long) snapshot.getValue();
-//            Log.d(TAG, "onDataChange: calvin score " + score);
-//        }
-//
-//        @Override
-//        public void onCancelled(@NonNull DatabaseError error) {
-//
-//        }
-//    };
 
     public static long randomLong(long lower, long upper) {
-//        return (long) (RANDOM.nextDouble() * (upper - lower));
         return lower + (long) (RANDOM.nextDouble() * (upper - lower));
     }
 
@@ -129,19 +99,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.new_game:
                 new_game(true);
@@ -156,18 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 quit(true);
                 break;
         }
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void bar(View view) {
-//        Random mRandom = new Random();
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         if (score.getBet() == 0)
             return;
 
@@ -186,9 +144,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsPlaying = true;
-            // 開始滾動
 
-            if (mRandom.nextInt(3) == 0) { // 中獎機率調整
+            if (mRandom.nextInt(3) == 0) {
                 Log.d(TAG, "bar: 會中獎");
 
                 int rand = mRandom.nextInt(100);
@@ -208,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
                 else if (rand < chance.sum(6))
                     mSlotMachine.play(7);
 
-//                mSlotMachine.play(mRandom.nextInt(bitmaps.size()));
                 chance.init();
             } else { //
                 Log.d(TAG, "bar: 不會中獎");
@@ -216,13 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 mSlotMachine.play(-1);
             }
         }
-        // 滾輪轉動是異步程序，不能在這裡重新載入分數，滾輪還在轉
-//        Log.d(TAG, "bar: go refresh");
-//        refresh_score();
-//        score.clean_bet();
-
-//        score.setRecord(score.getBet());
-//        score.clean_bet();
     }
 
     private void init() {
@@ -242,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(int pos01, int pos02, int pos03) {
                 mIsPlaying = false;
-//                Toast.makeText(getApplicationContext(), pos01 + "," + pos02 + "," + pos03, Toast.LENGTH_SHORT).show();
                 if (pos01 == pos02 && pos02 == pos03) {
                     Log.d(TAG, "onFinish: bingo pos: " + pos01 + " cur: " + score.getCurrent());
                     int temp = score.bingo(pos01);
@@ -252,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "onFinish: large " + large_score);
                 }
                 score.clean_bet();
-                // 此處轉動結束
                 Log.d(TAG, "onFinish: 轉動結束");
                 if (score.getCurrent() == 0 && score.getBet() == 0) {
                     new AlertDialog.Builder(MainActivity.this)
@@ -286,17 +233,10 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager lm = new LinearLayoutManager(this);
         lm.setReverseLayout(true);
 
-        // 原先leadboard在fragment形式
-//        lead_show = findViewById(R.id.lead);
-//        lead_show.setHasFixedSize(true);
-//        lead_show.setLayoutManager(lm);
-
-        // 10.14 測試開始 成功
         test = findViewById(R.id.test);
         test.setHasFixedSize(true);
         test.setLayoutManager(lm);
 
-        // 取得資料庫leaderboard下資料筆數
         FirebaseDatabase.getInstance().getReference("leaderboard").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -310,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast((int) count);
         Query query = FirebaseDatabase.getInstance().getReference("leaderboard").orderByChild("score").limitToLast(5);
 
         FirebaseRecyclerOptions<leaderboard> options = new FirebaseRecyclerOptions.Builder<leaderboard>()
@@ -337,10 +276,6 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         };
-//        bundle.put("adapter", adapter);
-//        test.setAdapter(adapter);
-//        10.14 測試結束
-//        lead_show.setAdapter(adapter);
     }
 
     class testHolder extends RecyclerView.ViewHolder {
@@ -377,18 +312,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void record_bet(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "record_bet: ");
         score.record_bet();
         refresh_score();
     }
 
     public void clear_bet(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "clean_bet: ");
 
         score.add_back();
@@ -396,9 +325,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet1(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "add_bet1: ");
         refresh_score();
 
@@ -412,9 +338,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet1(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "minus_bet1: ");
         refresh_score();
         if (score.getBet() < 1)
@@ -425,9 +348,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet5(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "add_bet5: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -443,9 +363,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet5(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "minus_bet5: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -459,9 +376,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void add_bet10(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "add_bet10: ");
         refresh_score();
         if (score.getBet() == 50 || score.getCurrent() == 0)
@@ -477,9 +391,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus_bet10(View view) {
-//        if (OptionFragment.getInstance().isVisible() || ListFragment.getInstance().isVisible()) {
-//            return;
-//        }
         Log.d(TAG, "minus_bet10: ");
         refresh_score();
         if (score.getBet() == 0)
@@ -564,97 +475,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    public void GetLeaderBoard(View view) {
-//        //讀取五號
-//        DatabaseReference leaderRef = (DatabaseReference) FirebaseDatabase.getInstance()
-//                .getReference("leaderboard")
-//                .child("5")
-//                .child("score");
-//        leaderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.getValue() == null) {
-//                    Log.d(TAG, "onDataChange: got null??");
-//                    return;
-//                }
-//                long score = (long) snapshot.getValue();
-//                Log.d(TAG, "onDataChange: score read back = " + score);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//            }
-//        });
-//    }
-
-    public void SetLeaderBoard(View view) {
-//        final Object[] test = new Object[1];
-//        設定數值
-//        DatabaseReference leaderRef_w = (DatabaseReference) FirebaseDatabase.getInstance()
-//                .getReference("leaderboard")
-//                .child("4")
-//                .child("score");
-//        leaderRef_w.setValue(110);
-        SwapLeaderBoard(3, 2);
-//        ReadLeaderBoard();
-//        SwapLeaderBoard(1, 2);
-    }
-
-    public void SwapLeaderBoard(int a, int b) {
-        Log.d(TAG, "SwapLeaderBoard: go here a:b " + a + ":" + b);
-//        a b 互換
-        DatabaseReference leader[] = new DatabaseReference[5];
-        DatabaseReference temp = FirebaseDatabase.getInstance().getReference().child("temp");
-
-        for (int i = 1; i <= 5; i++) {
-            leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
-                    .getReference("leaderboard")
-                    .child(Integer.toString(i));
-        }
-
-        leader[a].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                temp.child("score").setValue(snapshot.child("score").getValue());
-//                temp.child("name").setValue(snapshot.child("name").getValue());
-//                temp.child("date").setValue(snapshot.child("date").getValue());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        leader[b].addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                leader[a].child("score").setValue(snapshot.child("score").getValue());
-//                leader[a].child("name").setValue(snapshot.child("name").getValue());
-//                leader[a].child("date").setValue(snapshot.child("date").getValue());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        temp.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                leader[b].child("score").setValue(snapshot.child("score").getValue());
-//                leader[b].child("name").setValue(snapshot.child("name").getValue());
-//                leader[b].child("date").setValue(snapshot.child("date").getValue());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     public void SaveLeaderBoard(View view) {
         DatabaseReference leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard").push();
         Date date = new Date(System.currentTimeMillis());
@@ -668,9 +488,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String name = titleEdit.getText().toString();
                         leaderboard add = new leaderboard(name, large_score, new SimpleDateFormat("yyyy-MM-dd").format(date));
-//                        add.setName(name);
-//                        add.setScore(score.total());
-//                        add.setDate("20221111");
                         leaderboardRef.setValue(add);
                     }
                 }).setPositiveButton("Cancel", null)
@@ -690,9 +507,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String name = titleEdit.getText().toString();
                         leaderboard add = new leaderboard(name, large_score, new SimpleDateFormat("yyyy-MM-dd").format(date));
-//                        add.setName(name);
-//                        add.setScore(score.total());
-//                        add.setDate("20221111");
                         leaderboardRef.setValue(add);
                     }
                 }).setPositiveButton("Cancel", null)
@@ -701,7 +515,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void ReadLeaderBoard() {
         DatabaseReference leader[] = new DatabaseReference[5];
-//        long[] s = new long[5];
         for (int i = 1; i <= 5; i++) {
             leader[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
                     .getReference("leaderboard")
@@ -771,107 +584,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    public int sort(View view) {
-//
-//        Log.d(TAG, "sort: go here");
-//
-////        Arrays.sort(total_score);
-//
-////        long[] b = new long[total_score.length];
-////        int j = total_score.length;
-////        for (int i = 0; i < total_score.length; i++) {
-////            b[j - 1] = total_score[i];
-////            j -= 1;
-////        }
-//
-//        // printing the reversed array
-////        System.out.println("Reversed array is: \n");
-////        for (int k = 0; k < total_score.length; k++) {
-////            Log.d(TAG, "sort: " + b[k]);
-////        }
-//
-//        DatabaseReference LeaderRef[] = new DatabaseReference[5];
-////        long[] s = new long[5];
-//        for (int i = 1; i <= 5; i++) {
-//            LeaderRef[i - 1] = (DatabaseReference) FirebaseDatabase.getInstance()
-//                    .getReference("leaderboard")
-//                    .child(Integer.toString(i));
-//        }
-//
-//        LeaderRef[0].addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                total_score[0] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-//                Log.d(TAG, "onDataChange: 0 | " + total_score[0]);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//        LeaderRef[1].addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                total_score[1] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-//                Log.d(TAG, "onDataChange: 1 | " + total_score[1]);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        LeaderRef[2].addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                total_score[2] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-//                Log.d(TAG, "onDataChange: 2 | " + total_score[2]);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        LeaderRef[3].addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                total_score[3] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-//                Log.d(TAG, "onDataChange: 3 | " + total_score[3]);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        LeaderRef[4].addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                total_score[4] = Long.parseLong(snapshot.child("score").getValue().toString(), 10);
-//                Log.d(TAG, "onDataChange: 4 | " + total_score[4]);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//        for (int j = 0; j < 4; j++) {
-////                Log.d(TAG, "sort: i:j " + i +":"+ j);
-//            Log.d(TAG, "sort: score_j:score_j+1 " + total_score[j] + ":" + total_score[j + 1]);
-//            if (total_score[j] < total_score[j + 1]) {
-//                SwapLeaderBoard(j, j + 1);
-//            }
-//        }
-////        }
-//
-//        return 0;
-//    }
-
     public void quit(boolean t) {
         final boolean[] q = {false};
         Log.d(TAG, "quit: go");
@@ -883,7 +595,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SaveLeaderBoard();
-//                System.exit(0);
                 q[0] = true;
             }
         });
@@ -895,26 +606,9 @@ public class MainActivity extends AppCompatActivity {
         });
         temp.create().show();
 
-
-//        AlertDialog temp = new AlertDialog.Builder(MainActivity.this)
-//                .setTitle("Quit Game")
-//                .setMessage("Do you want to save score to leaderboard ?")
-//                .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        SaveLeaderBoard();
-//                    }
-//                })
-//                .setPositiveButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                }).show();
-//        temp.show();
         Log.d(TAG, "quit: 有欸 " + q[0]);
         if (q[0] == true) {
             Log.d(TAG, "quit: really quit");
-//            finish();
         }
     }
 

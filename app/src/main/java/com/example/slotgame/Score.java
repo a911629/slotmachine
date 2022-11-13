@@ -9,7 +9,6 @@ public class Score {
     private int record;
 
     public int bingo(int cur) {
-//        load_score();
         switch (cur) {
             case 0:
             case 1:
@@ -35,22 +34,16 @@ public class Score {
                 Log.d(TAG, "bingo now:" + getCurrent());
                 break;
             default:
-//                bet = 0;
-//                setBet(0);
                 break;
         }
         setRecord(getBet());
         clean_bet();
         return getCurrent();
-//        record = bet;
-//        set_score();
     }
 
     public void clean_bet() {
         Log.d(TAG, "clean_bet: ");
-//        load_score();
         setBet(0);
-//        set_score();
     }
 
     public Score() {
@@ -119,6 +112,5 @@ public class Score {
     }
 
     public void load_score() {
-
     }
 }

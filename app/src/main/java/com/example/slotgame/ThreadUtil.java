@@ -9,9 +9,6 @@ import android.os.MessageQueue.IdleHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- * 线程执行代理类，用于统一管理线程
- */
 public class ThreadUtil {
 
     private final static String ASYNC_THREAD_NAME = "single-async-thread";
@@ -63,74 +60,38 @@ public class ThreadUtil {
         return sInstance;
     }
 
-    /**
-     * 執行異步任務
-     */
     public void execute(Runnable task) {
         mExecutor.execute(task);
     }
 
-    /**
-     * 取消任務
-     */
     public void cancel(final Runnable task) {
         mExecutor.remove(task);
         mSingleAsyncHandler.removeCallbacks(task);
         mMainHandler.removeCallbacks(task);
     }
 
-    /**
-     * 銷毀
-     */
     public void destroy() {
         mExecutor.shutdownNow();
         mSingleAsyncHandler.removeCallbacksAndMessages(null);
         mMainHandler.removeCallbacksAndMessages(null);
     }
 
-    /**
-     * 提交一个Runable到异步线程队列，该异步线程为单队列
-     *
-     * @param r
-     */
     public void runOnAsyncThread(Runnable r) {
         mSingleAsyncHandler.post(r);
     }
 
-    /**
-     * 提交一个Runable到异步线程队列，该异步线程为单队列
-     *
-     * @param r
-     * @param delay
-     */
     public void runOnAsyncThread(Runnable r, long delay) {
         mSingleAsyncHandler.postDelayed(r, delay);
     }
 
-    /**
-     * 提交一个Runable到主线程队列
-     *
-     * @param r
-     */
     public void runOnMainThread(Runnable r) {
         mMainHandler.post(r);
     }
 
-    /**
-     * 提交一个Runable到主线程队列
-     *
-     * @param r
-     * @param delay
-     */
     public void runOnMainThread(Runnable r, long delay) {
         mMainHandler.postDelayed(r, delay);
     }
 
-    /**
-     * 提交一个Runnable到主线程空闲时执行
-     *
-     * @param r
-     */
     public void runOnIdleTime(final Runnable r) {
         IdleHandler handler = new IdleHandler() {
 

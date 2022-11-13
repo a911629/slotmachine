@@ -12,24 +12,11 @@ import java.util.List;
 
 import com.example.slotgame.R;
 
-/**
- * 图片滚动选择器
- * Created by huangziwei on 16-12-7.
- */
 public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
 
-    /**
-     * 图片绘制模式：填充
-     */
-    public final static int DRAW_MODE_FULL = 1; //
-    /**
-     * 图片绘制模式：居中
-     */
-    public final static int DRAW_MODE_CENTER = 2; //
-    /**
-     * 图片绘制模式：指定大小
-     */
-    public final static int DRAW_MODE_SPECIFIED_SIZE = 3; //
+    public final static int DRAW_MODE_FULL = 1;
+    public final static int DRAW_MODE_CENTER = 2;
+    public final static int DRAW_MODE_SPECIFIED_SIZE = 3;
 
     private int mMeasureWidth;
     private int mMeasureHeight;
@@ -78,8 +65,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
         super.onSizeChanged(w, h, oldw, oldh);
         mMeasureWidth = getMeasuredWidth();
         mMeasureHeight = getMeasuredHeight();
-        // 当view的的大小确定后，选择器中item的某些位置也可确定。当水平滚动时，item的顶部和底部的坐标y可确定；当垂直滚动时，item的左边和右边的坐标x可确定
-        if (mDrawMode == DRAW_MODE_FULL) { // 填充
+        if (mDrawMode == DRAW_MODE_FULL) {
             if (isHorizontal()) {
                 mRect2.top = 0;
                 mRect2.bottom = mMeasureHeight;
@@ -87,7 +73,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
                 mRect2.left = 0;
                 mRect2.right = mMeasureWidth;
             }
-        } else if (mDrawMode == DRAW_MODE_SPECIFIED_SIZE) { // 指定大小
+        } else if (mDrawMode == DRAW_MODE_SPECIFIED_SIZE) {
             if (mSpecifiedSizeWidth == -1) {
                 mSpecifiedSizeWidth = mMeasureWidth;
                 mSpecifiedSizeHeight = mMeasureHeight;
@@ -120,10 +106,7 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
 
         int span = 0;
 
-        // 根据不同的绘制模式，计算出item内容的最终绘制位置和大小
-        // 当水平滚动时，计算item的左边和右边的坐标x；当垂直滚动时，item的顶部和底部的坐标y
-
-        if (mDrawMode == DRAW_MODE_FULL) { // 填充
+        if (mDrawMode == DRAW_MODE_FULL) {
             span = 0;
             if (isHorizontal()) {
                 mRect2.left = (int) top + span;
@@ -190,18 +173,17 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
             return;
         }
 
-        if (relative == -1 || relative == 1) { // 上一个或下一个
-            // 处理上一个item且向上滑动　或者　处理下一个item且向下滑动,
+        if (relative == -1 || relative == 1) {
             if ((relative == -1 && moveLength < 0)
                     || (relative == 1 && moveLength > 0)) {
                 spanWidth = (rect.width() - mMinScale * rect.width()) / 2;
                 spanHeight = (rect.height() - mMinScale * rect.height()) / 2;
-            } else { // 计算渐变
+            } else {
                 float rate = Math.abs(moveLength) / itemSize;
                 spanWidth = (rect.width() - (mMinScale + (mMaxScale - mMinScale) * rate) * rect.width()) / 2;
                 spanHeight = (rect.height() - (mMinScale + (mMaxScale - mMinScale) * rate) * rect.height()) / 2;
             }
-        } else if (relative == 0) { // 中间item
+        } else if (relative == 0) {
             float rate = (itemSize - Math.abs(moveLength)) / itemSize;
             spanWidth = (rect.width() - (mMinScale + (mMaxScale - mMinScale) * rate) * rect.width()) / 2;
             spanHeight = (rect.height() - (mMinScale + (mMaxScale - mMinScale) * rate) * rect.height()) / 2;
@@ -214,14 +196,8 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
         rect.right -= spanWidth;
         rect.top += spanHeight;
         rect.bottom -= spanHeight;
-
     }
 
-    /**
-     * 图片绘制模式 ，默认为居中
-     *
-     * @param mode
-     */
     public void setDrawMode(int mode) {
         int size = 0;
         if (isHorizontal()) {
@@ -268,21 +244,10 @@ public class BitmapScrollPicker extends ScrollPickerView<Bitmap> {
         invalidate();
     }
 
-    /**
-     * 图片绘制模式 ，默认为居中
-     *
-     * @return
-     */
     public int getDrawMode() {
         return mDrawMode;
     }
 
-    /**
-     * item内容缩放倍数
-     *
-     * @param minScale 沒有被选中时的最小倍数
-     * @param maxScale 被选中时的最大倍数
-     */
     public void setItemScale(float minScale, float maxScale) {
         mMinScale = minScale;
         mMaxScale = maxScale;

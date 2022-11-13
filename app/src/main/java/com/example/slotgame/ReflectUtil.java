@@ -3,17 +3,8 @@ package com.example.slotgame;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * 反射工具類
- */
 public class ReflectUtil {
-    /**
-     * 獲取類裡指定變數
-     *
-     * @param thisClass
-     * @param fieldName
-     * @return
-     */
+
     public static Field getField(Class<?> thisClass, String fieldName) {
         if (thisClass == null) {
             return null;
@@ -26,13 +17,6 @@ public class ReflectUtil {
         }
     }
 
-    /**
-     * 獲取類裡指定變數
-     *
-     * @param instance
-     * @param fieldName
-     * @return 返回空則可能數值不存在
-     */
     public static Object getValue(Object instance, String fieldName) {
         Field field = getField(instance.getClass(), fieldName);
         if (field == null) {
@@ -47,13 +31,6 @@ public class ReflectUtil {
         }
     }
 
-    /**
-     * 獲取靜態變數的值
-     *
-     * @param clazz
-     * @param fieldName
-     * @return 返回空則可能值不存在，或變數不存在
-     */
     public static Object getValue(Class clazz, String fieldName) {
         Field field = getField(clazz, fieldName);
         if (field == null) {
@@ -68,15 +45,6 @@ public class ReflectUtil {
         }
     }
 
-    /**
-     * 獲取類裡的方法
-     *
-     * @param thisClass
-     * @param methodName
-     * @param parameterTypes
-     * @return
-     * @throws NoSuchMethodException
-     */
     public static Method getMethod(Class<?> thisClass, String methodName, Class<?>[] parameterTypes) {
         if (thisClass == null) {
             return null;
@@ -94,15 +62,6 @@ public class ReflectUtil {
         }
     }
 
-    /**
-     * 执行对象里的方法
-     *
-     * @param instance
-     * @param methodName
-     * @param args       方法参数
-     * @return 返回值
-     * @throws Throwable 方法不存在或者执行失败跑出异常
-     */
     public static Object invokeMethod(Object instance, String methodName, Object... args) throws Throwable {
         Class<?>[] parameterTypes = null;
         if (args != null) {
@@ -117,15 +76,6 @@ public class ReflectUtil {
         return method.invoke(instance, args);
     }
 
-    /**
-     * 执行静态方法
-     *
-     * @param clazz
-     * @param methodName
-     * @param args       方法参数
-     * @return 返回值
-     * @throws Throwable 方法不存在或者执行失败跑出异常
-     */
     public static Object invokeMethod(Class clazz, String methodName, Object... args) throws Throwable {
         Class<?>[] parameterTypes = null;
         if (args != null) {

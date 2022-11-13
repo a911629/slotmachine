@@ -6,7 +6,9 @@ public class Chance {
     int[] chance = new int[7];
     private String TAG = Chance.class.getSimpleName();
 
-    //初始化機率
+    /**
+     * 初始化機率
+     */
     public void init() {
         this.chance[0] = 18;
         this.chance[1] = 18;
@@ -17,7 +19,9 @@ public class Chance {
         this.chance[6] = 6;
     }
 
-    //增加chance 1~3的機率1，並減少chance 4~6的機率1，以chance 7 也就是 6 為最低基準
+    /**
+     * 增加chance 1~3的機率1，並減少chance 4~6的機率1，以chance 7 也就是 6 為最低基準
+     */
     public void add_chance() {
         int times = 0;
         if (chance[3] == 6) {
@@ -47,7 +51,10 @@ public class Chance {
         Log.d(TAG, "add_chance: " + chance[0] + " | " + chance[1] + " | " + chance[2] + " | " + chance[3] + " | " + chance[4] + " | " + chance[5] + " | " + chance[6]);
     }
 
-    //找出 chance 0 1 2順序的最小值
+    /**
+     * 找出 chance 0 1 2順序的最小值
+     * @return 0 1 2最小值位置
+     */
     private int mini() {
         if (chance[1] < chance[0])
             return 1;
@@ -56,7 +63,11 @@ public class Chance {
         return 0;
     }
 
-    //change 從0到num的總和
+    /**
+     * 從0到num的機率總和
+     * @param num
+     * @return 總和
+     */
     public int sum(int num) {
         int sum = 0;
         for (int i = 0; i <= num; i++) {
